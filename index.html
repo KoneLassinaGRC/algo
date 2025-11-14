@@ -6,175 +6,453 @@
   <title>Portfolio — Visiteur (Algorithmique & Complexité)</title>
   <style>
     :root{
-      --bg:#ffffff; --muted:#f7fafc; --card:#ffffff;
-      --accent:#0ea5e9; --text:#0f1724; --muted-text:#475569; --radius:10px; --shadow:0 6px 18px rgba(16,24,40,0.06);
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      --bg: #0f1724;           /* page background */
+      --panel: #0b1220;        /* dark panel */
+      --card: #0f1724;         /* card background (transparent) */
+      --surface: rgba(255,255,255,0.04);
+      --muted: #94a3b8;        /* muted text */
+      --text: #e6eef8;
+      --accent-1: #06b6d4;     /* cyan */
+      --accent-2: #60a5fa;     /* blue */
+      --glass: rgba(255,255,255,0.03);
+      --radius: 14px;
+      --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-    .wrap{display:flex;gap:20px;min-height:100vh;padding:20px;box-sizing:border-box}
-    .sidebar{width:320px;max-width:40%;background:var(--muted);padding:14px;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#60e0ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;}
-    h1{font-size:16px;margin:0}
-    .muted{color:var(--muted-text);font-size:13px}
-    .list{overflow:auto;padding-right:6px}
-    .lesson-item{padding:10px;border-radius:8px;background:var(--card);cursor:pointer;margin-bottom:8px}
-    .lesson-title{font-weight:700}
-    .meta{font-size:12px;color:var(--muted-text)}
-    .content{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
-    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)}
-    .lesson-full{border-left:4px solid var(--accent);padding-left:12px}
-    h2{margin:0 0 8px 0}
-    p{margin:6px 0;white-space:pre-wrap}
-    .small{font-size:13px;color:var(--muted-text)}
-    .tools{display:flex;gap:8px;align-items:center}
-    @media (max-width:900px){.wrap{padding:12px}.sidebar{display:none}}
+
+    * { box-sizing: border-box; }
+    html,body { height:100%; margin:0; background:linear-gradient(180deg,#071027 0%, #081427 50%, #07142b 100%); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    /* Layout */
+    .wrap {
+      display:flex;
+      gap:24px;
+      padding:28px;
+      min-height:100vh;
+      align-items:flex-start;
+    }
+    .sidebar {
+      width:320px;
+      max-width:32%;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+      position:sticky;
+      top:24px;
+      height:calc(100vh - 48px);
+      overflow:auto;
+    }
+
+    .brand {
+      display:flex; gap:12px; align-items:center; margin-bottom:12px;
+    }
+    .logo {
+      width:54px; height:54px; border-radius:12px;
+      background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+      display:flex; align-items:center; justify-content:center; font-weight:800; color:white; font-size:18px;
+      box-shadow: 0 6px 20px rgba(59,130,246,0.18);
+    }
+    h1 { margin:0; font-size:18px; }
+    .subtitle { color:var(--muted); font-size:13px; margin-top:4px; }
+
+    .controls { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .btn {
+      background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      color:var(--text); border:1px solid rgba(255,255,255,0.03); padding:8px 10px; border-radius:10px; cursor:pointer; font-weight:600;
+    }
+    .btn.primary { background:linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#00101a; border:0; box-shadow:0 8px 20px rgba(6,182,212,0.12); }
+    .small { font-size:13px; color:var(--muted); }
+
+    .search {
+      margin-top:12px;
+      display:flex; gap:10px; align-items:center;
+      background:var(--glass);
+      padding:8px; border-radius:12px; border:1px solid rgba(255,255,255,0.02);
+    }
+    .search input {
+      background:transparent; border:0; outline:none; color:var(--text); font-size:14px; width:100%;
+    }
+
+    .list { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+
+    .lesson-list-item {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:10px; border-radius:10px; cursor:pointer;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.02);
+      transition:transform .14s ease, background .14s;
+    }
+    .lesson-list-item:hover { transform:translateY(-3px); background:linear-gradient(90deg, rgba(96,165,250,0.08), rgba(6,182,212,0.04)); }
+    .lesson-title { font-weight:700; color:var(--text); }
+    .lesson-meta { font-size:12px; color:var(--muted); }
+
+    .main {
+      flex:1; min-width:0; display:flex; flex-direction:column; gap:18px;
+    }
+
+    .hero {
+      position:relative; border-radius:18px; padding:28px;
+      background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(96,165,250,0.08));
+      border:1px solid rgba(255,255,255,0.03);
+      display:flex; justify-content:space-between; align-items:center; gap:20px;
+      box-shadow: 0 12px 36px rgba(2,6,23,0.45);
+    }
+    .hero-left { max-width:68%; }
+    .hero h2 { margin:0; font-size:24px; line-height:1.05; color: white; }
+    .hero p { margin:8px 0 0 0; color:var(--muted); font-size:14px; }
+
+    .hero-actions { display:flex; gap:10px; align-items:center; }
+    .pill { padding:8px 12px; border-radius:999px; font-weight:700; font-size:14px; cursor:pointer; border:1px solid rgba(255,255,255,0.03) }
+    .pill.ghost { background:transparent; color:var(--text) }
+    .pill.cta { background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#00101a; box-shadow:0 8px 24px rgba(6,182,212,0.14); }
+
+    /* Grid of cards */
+    .cards {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap:18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:18px;
+      box-shadow: 0 6px 22px rgba(2,6,23,0.45);
+      border:1px solid rgba(255,255,255,0.02);
+      transition:transform .16s ease, box-shadow .16s;
+    }
+    .card:hover { transform:translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.6); }
+
+    .card h3 { margin:0 0 8px 0; font-size:16px; color:var(--text); }
+    .excerpt { color:var(--muted); font-size:14px; min-height:48px; white-space:pre-wrap; }
+    .card-footer { margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .chip { font-size:12px; padding:6px 8px; border-radius:999px; background:rgba(255,255,255,0.03); color:var(--muted); border:1px solid rgba(255,255,255,0.02); }
+
+    /* Modal */
+    .modal-backdrop {
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1200;
+      background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.8));
+      padding:28px;
+    }
+    .modal {
+      background: linear-gradient(180deg, rgba(10,16,28,0.95), rgba(8,12,22,0.96));
+      color:var(--text); width:min(950px,100%); max-height:90vh; overflow:auto; border-radius:16px; padding:22px; border:1px solid rgba(255,255,255,0.03);
+    }
+    .modal h2 { margin:0 0 8px 0; color:white; }
+    .section { margin-top:12px; }
+    .section h4 { margin:0 0 6px 0; font-size:14px; color:var(--muted); }
+    .section p { margin:0; color:var(--text); line-height:1.5; white-space:pre-wrap; }
+
+    .modal-close { position:absolute; top:28px; right:28px; background:transparent; border:0; color:var(--text); font-size:20px; cursor:pointer; }
+
+    /* Bilan card */
+    .bilan-card { padding:18px; border-radius:14px; background:linear-gradient(90deg, rgba(6,182,212,0.06), rgba(96,165,250,0.03)); border:1px solid rgba(255,255,255,0.02); box-shadow:0 10px 30px rgba(2,6,23,0.4); }
+
+    /* Responsive */
+    @media (max-width:980px) {
+      .wrap { padding:16px; gap:12px; flex-direction:column; }
+      .sidebar { position:relative; width:100%; height:auto; max-width:none; order:2; }
+      .hero-left { max-width:100%; }
+      .cards { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    }
+    @media (max-width:520px) {
+      .cards { grid-template-columns: 1fr; }
+      .hero { padding:18px; }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar" aria-label="Navigation">
       <div class="brand">
         <div class="logo">AC</div>
         <div>
           <h1>Portfolio — Visiteur</h1>
-          <div class="muted">Algorithmique & Complexité — lecture seule</div>
+          <div class="subtitle">Algorithmique & Complexité — lecture</div>
         </div>
       </div>
 
-      <div style="margin-top:8px;font-size:13px;color:var(--muted-text)">Leçons</div>
-      <div id="list" class="list card" style="padding:10px;max-height:70vh"></div>
-
-      <div class="card" style="display:flex;flex-direction:column;gap:8px">
-        <div class="small">Ce mode lit les données depuis votre navigateur (localStorage).</div>
-        <div style="display:flex;gap:8px">
-          <button id="btnReload" class="ghost" style="border:1px solid #eee;background:transparent;padding:8px;border-radius:8px">Recharger</button>
-          <label class="ghost" style="padding:8px;border-radius:8px;cursor:pointer">Importer JSON<input type="file" id="fileImport" style="display:none" accept=".json"></label>
-        </div>
-        <div class="small">Vous pouvez importer un export JSON pour afficher des données partagées.</div>
+      <div class="controls">
+        <button id="reloadBtn" class="btn">Recharger</button>
+        <label class="btn" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          Importer JSON
+          <input type="file" id="fileImport" accept=".json" style="display:none">
+        </label>
+        <button id="goEditor" class="btn primary">Aller à l'éditeur</button>
       </div>
+
+      <div class="search" style="margin-top:12px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.9"><path d="M21 21l-4.35-4.35" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input id="searchInput" placeholder="Rechercher leçons, concepts..." aria-label="Recherche" />
+      </div>
+
+      <div class="small" style="margin-top:12px">Sommaire</div>
+      <div id="sidebarList" class="list" role="navigation" aria-label="Liste des leçons"></div>
+
+      <div style="margin-top:16px" class="small">Les données sont lues depuis le stockage local (localStorage). Utilisez "Importer JSON" pour afficher des données partagées.</div>
     </aside>
 
-    <main class="content" id="main">
-      <div class="card" id="topCard">
-        <h2 style="margin:0">Bienvenue</h2>
-        <div class="small">Parcourez les leçons et le bilan final. Mode lecture seule — aucune modification locale.</div>
+    <main class="main" id="main">
+      <div class="hero" role="banner">
+        <div class="hero-left">
+          <h2>Portfolio évolutif — Algorithmique & Complexité</h2>
+          <p>Explorez les leçons et la synthèse finale. Présentation optimisée pour la lecture — agréable et responsive.</p>
+        </div>
+        <div class="hero-actions">
+          <div id="countPill" class="pill ghost">0 leçons</div>
+          <button id="focusBilan" class="pill cta">Voir le Bilan</button>
+        </div>
       </div>
 
-      <div id="lessonsContainer"></div>
+      <section aria-label="Leçons disponibles">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <h3 style="margin:0">Leçons</h3>
+          <div class="small" id="lastUpdated">—</div>
+        </div>
 
-      <div class="card">
-        <h2 style="margin:0 0 8px 0">Bilan Final</h2>
-        <div id="bilanContainer" class="small"></div>
-      </div>
+        <div id="cards" class="cards"></div>
+      </section>
+
+      <section aria-label="Bilan final">
+        <div class="bilan-card">
+          <h3 style="margin:0 0 8px 0">Bilan Final</h3>
+          <div id="bilanContent" class="small"></div>
+        </div>
+      </section>
     </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modalClose" aria-label="Fermer">✕</button>
+      <h2 id="modalTitle">Titre</h2>
+      <div id="modalBody">
+        <!-- sections inserted here -->
+      </div>
+    </div>
   </div>
 
   <script>
     const STORAGE_KEY = 'ac_portfolio_v2';
-    const listEl = document.getElementById('list');
-    const lessonsContainer = document.getElementById('lessonsContainer');
-    const bilanContainer = document.getElementById('bilanContainer');
-    const btnReload = document.getElementById('btnReload');
-
     let data = { lessons: [], bilan: {} };
+    const sidebarList = document.getElementById('sidebarList');
+    const cardsEl = document.getElementById('cards');
+    const bilanContent = document.getElementById('bilanContent');
+    const lastUpdated = document.getElementById('lastUpdated');
+    const countPill = document.getElementById('countPill');
+    const searchInput = document.getElementById('searchInput');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
 
+    // Utility
+    function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\n/g,'<br>'); }
+    function excerpt(text, n = 180) {
+      if (!text) return '';
+      const t = text.replace(/\\s+/g,' ').trim();
+      return t.length > n ? t.slice(0,n).trim() + '…' : t;
+    }
+    function formatDate(ts){
+      if (!ts) return '';
+      const d = new Date(ts);
+      return d.toLocaleString();
+    }
+
+    // Load from localStorage
     function loadFromLocal(){
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) { data = { lessons: [], bilan: {} }; renderAll(); return; }
+      if (!raw) {
+        data = { lessons: [], bilan: {} };
+        renderAll();
+        return;
+      }
       try {
-        data = JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        data = Object.assign({ lessons: [], bilan: {} }, parsed);
         if (!Array.isArray(data.lessons)) data.lessons = [];
-      } catch(e){ console.error('parse',e); data = { lessons: [], bilan: {} }; }
+      } catch(e){ console.error('Erreur parsing JSON localStorage', e); data = { lessons: [], bilan: {} }; }
       renderAll();
     }
 
-    function renderAll(){
-      // Sidebar list
-      listEl.innerHTML = '';
+    // Render sidebar and cards
+    function renderAll(filter = '') {
+      // filter: search string
+      const q = (filter||'').trim().toLowerCase();
+      // sidebar
+      sidebarList.innerHTML = '';
       data.lessons.forEach((l, idx) => {
-        const d = document.createElement('div');
-        d.className = 'lesson-item';
-        d.tabIndex = 0;
-        d.innerHTML = `<div class="lesson-title">${escapeHtml(l.title||('Leçon '+(idx+1)))}</div><div class="meta">${l.updatedAt? 'Modifié ' + new Date(l.updatedAt).toLocaleString():''}</div>`;
-        d.addEventListener('click', ()=> {
-          // scroll to corresponding lesson in main area
-          const target = document.getElementById('lesson_' + (l.id || idx));
-          if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
-        });
-        listEl.appendChild(d);
+        const li = document.createElement('div');
+        li.className = 'lesson-list-item';
+        li.tabIndex = 0;
+        li.innerHTML = `<div>
+                          <div class="lesson-title">${escapeHtml(l.title || ('Leçon '+(idx+1)))}</div>
+                          <div class="lesson-meta">${l.updatedAt ? 'Modifié ' + formatDate(l.updatedAt) : ''}</div>
+                        </div>`;
+        li.addEventListener('click', () => openLessonModal(l));
+        sidebarList.appendChild(li);
       });
-      // bilan quick link
-      const bilanLink = document.createElement('div');
-      bilanLink.className = 'lesson-item';
-      bilanLink.innerHTML = '<div class="lesson-title">Bilan Final</div><div class="meta">Synthèse finale</div>';
-      bilanLink.onclick = () => { document.querySelector('.card h2')?.scrollIntoView({behavior:'smooth'}); };
-      listEl.appendChild(bilanLink);
 
-      // Main lessons
-      lessonsContainer.innerHTML = '';
-      if (!data.lessons.length) {
-        lessonsContainer.innerHTML = '<div class="card small">Aucune leçon disponible.</div>';
-      } else {
-        data.lessons.forEach((l, idx) => {
-          const wrap = document.createElement('div');
-          wrap.className = 'card lesson-full';
-          wrap.id = 'lesson_' + (l.id || idx);
-          wrap.innerHTML = `<h2>${escapeHtml(l.title || ('Leçon '+(idx+1)))}</h2>
-            <strong>Journal d'apprentissage réflexif</strong><p>${escapeHtml(l.journal||'')}</p>
-            <strong>Synthèse personnelle</strong><p>${escapeHtml(l.synthese||'')}</p>
-            <strong>Application pratique</strong><p>${escapeHtml(l.application||'')}</p>
-            <strong>Ce que je maîtrise bien</strong><p>${escapeHtml(l.maitrise||'')}</p>
-            <strong>Ce que je dois améliorer</strong><p>${escapeHtml(l.ameliorer||'')}</p>
-            <strong>Stratégie pour progresser</strong><p>${escapeHtml(l.strategie||'')}</p>
-          `;
-          lessonsContainer.appendChild(wrap);
-        });
-      }
+      // cards (grid)
+      cardsEl.innerHTML = '';
+      const filtered = (q ? data.lessons.filter(l => {
+        const blob = ((l.title||'') + ' ' + (l.journal||'') + ' ' + (l.synthese||'') + ' ' + (l.application||'') + ' ' + (l.maitrise||'') + ' ' + (l.ameliorer||'') + ' ' + (l.strategie||'')).toLowerCase();
+        return blob.indexOf(q) !== -1;
+      }) : data.lessons);
 
-      // Bilan
+      filtered.forEach((l, idx) => {
+        const c = document.createElement('article');
+        c.className = 'card';
+        const updated = l.updatedAt ? formatDate(l.updatedAt) : '';
+        const excerptText = excerpt(l.journal || l.synthese || l.application || '', 220);
+        c.innerHTML = `<h3>${escapeHtml(l.title || ('Leçon ' + (idx+1)))}</h3>
+                       <div class="excerpt">${escapeHtml(excerptText)}</div>
+                       <div class="card-footer">
+                         <div class="chip">${updated}</div>
+                         <div style="display:flex;gap:8px">
+                           <button class="btn" data-id="${l.id}">Lire</button>
+                         </div>
+                       </div>`;
+        const btn = c.querySelector('button[data-id]');
+        btn.addEventListener('click', () => openLessonModal(l));
+        cardsEl.appendChild(c);
+      });
+
+      // bilan
       const b = data.bilan || {};
-      bilanContainer.innerHTML = `<strong>Ce que j’ai le plus appris</strong><p>${escapeHtml(b.appris||'')}</p>
-        <strong>Les compétences que je peux réutiliser ailleurs</strong><p>${escapeHtml(b.competences||'')}</p>
-        <strong>Mon plus grand défi</strong><p>${escapeHtml(b.defis||'')}</p>
-        <strong>Mes prochaines étapes d'apprentissage</strong><p>${escapeHtml(b.prochaines||'')}</p>`;
+      bilanContent.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+          <div><strong class="small">Ce que j’ai le plus appris</strong><p class="small" style="color:var(--text);margin-top:6px">${escapeHtml(b.appris||'—')}</p></div>
+          <div><strong class="small">Compétences réutilisables</strong><p class="small" style="color:var(--text);margin-top:6px">${escapeHtml(b.competences||'—')}</p></div>
+          <div><strong class="small">Mon plus grand défi</strong><p class="small" style="color:var(--text);margin-top:6px">${escapeHtml(b.defis||'—')}</p></div>
+          <div><strong class="small">Prochaines étapes</strong><p class="small" style="color:var(--text);margin-top:6px">${escapeHtml(b.prochaines||'—')}</p></div>
+        </div>
+      `;
+
+      // meta
+      lastUpdated.textContent = data.lessons.length ? 'Dernière: ' + formatDate(Math.max(...data.lessons.map(x => x.updatedAt || 0))) : 'Aucune leçon';
+      countPill.textContent = `${data.lessons.length} leçon${data.lessons.length>1?'s':''}`;
+
+      // If no lessons
+      if (filtered.length === 0) {
+        cardsEl.innerHTML = `<div class="card" style="text-align:center;grid-column:1/-1"><div style="font-weight:700;color:var(--muted)">Aucune leçon trouvée</div><div class="small" style="margin-top:6px">Essayez une autre recherche ou importer un JSON.</div></div>`;
+      }
     }
 
-    function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\n/g,'<br>'); }
+    // Open modal to read a lesson
+    function openLessonModal(l){
+      modalBackdrop.style.display = 'flex';
+      modalBackdrop.setAttribute('aria-hidden','false');
+      modalTitle.innerHTML = escapeHtml(l.title || 'Leçon');
+      modalBody.innerHTML = `
+        <div class="section">
+          <h4>Journal d'apprentissage réflexif</h4>
+          <p>${escapeHtml(l.journal || '—')}</p>
+        </div>
+        <div class="section">
+          <h4>Synthèse personnelle des concepts clés</h4>
+          <p>${escapeHtml(l.synthese || '—')}</p>
+        </div>
+        <div class="section">
+          <h4>Application pratique</h4>
+          <p>${escapeHtml(l.application || '—')}</p>
+        </div>
+        <div class="section">
+          <h4>Ce que je maîtrise bien</h4>
+          <p>${escapeHtml(l.maitrise || '—')}</p>
+        </div>
+        <div class="section">
+          <h4>Ce que je dois améliorer</h4>
+          <p>${escapeHtml(l.ameliorer || '—')}</p>
+        </div>
+        <div class="section">
+          <h4>Stratégie pour progresser</h4>
+          <p>${escapeHtml(l.strategie || '—')}</p>
+        </div>
+      `;
+      // focus for accessibility
+      modal.focus();
+    }
 
-    // Import JSON to display (does not auto-save to localStorage unless user chooses)
+    function closeModal(){
+      modalBackdrop.style.display = 'none';
+      modalBackdrop.setAttribute('aria-hidden','true');
+      modalTitle.textContent = '';
+      modalBody.innerHTML = '';
+    }
+
+    // Import JSON (display & optionally save)
     document.getElementById('fileImport').addEventListener('change', (e) => {
       const f = e.target.files[0];
       if (!f) return;
-      const r = new FileReader();
-      r.onload = () => {
+      const reader = new FileReader();
+      reader.onload = () => {
         try {
-          const parsed = JSON.parse(r.result);
-          if (parsed && parsed.lessons) {
-            data = parsed;
-            renderAll();
-            alert('Import effectué (affichage local). Pour partager, les utilisateurs peuvent importer ce fichier dans leur navigateur.');
-          } else alert('Fichier JSON invalide (attendu structure { lessons: [...], bilan: {...} })');
-        } catch(err){ alert('Impossible de parser le JSON'); console.error(err); }
+          const parsed = JSON.parse(reader.result);
+          if (!parsed || !parsed.lessons) {
+            alert('Fichier JSON invalide. Structure attendue: { lessons: [...], bilan: {...} }');
+            return;
+          }
+          // Ask whether to write to localStorage
+          const write = confirm('Importer le JSON pour affichage. Voulez-vous aussi écrire ces données dans votre localStorage (écrasera les données locales) ?');
+          if (write) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+            loadFromLocal();
+            alert('Importé et enregistré localement.');
+          } else {
+            data = Object.assign({ lessons: [], bilan: {} }, parsed);
+            renderAll(searchInput.value);
+            alert('Importé pour affichage (localStorage non modifié).');
+          }
+        } catch(err) {
+          console.error(err);
+          alert('Impossible de lire le fichier JSON.');
+        } finally {
+          e.target.value = '';
+        }
       };
-      r.readAsText(f);
-      e.target.value = '';
+      reader.readAsText(f);
     });
 
     // Buttons
-    btnReload.addEventListener('click', loadFromLocal);
-
-    // Periodically sync with localStorage if it changes in another tab
-    window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY) {
-        loadFromLocal();
-      }
+    document.getElementById('reloadBtn').addEventListener('click', loadFromLocal);
+    document.getElementById('goEditor').addEventListener('click', () => {
+      // open editor.html in a new tab if available
+      const editorUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'editor.html';
+      // If hosted on GitHub Pages and path ends with a file, ensure correct.
+      window.open(editorUrl, '_blank');
+    });
+    document.getElementById('focusBilan').addEventListener('click', () => {
+      document.querySelector('[aria-label="Bilan final"]')?.scrollIntoView({behavior:'smooth'});
     });
 
-    // initial load
-    document.addEventListener('DOMContentLoaded', loadFromLocal);
+    // Search
+    searchInput.addEventListener('input', (e) => {
+      renderAll(e.target.value);
+    });
 
-    // expose for debugging
+    // Modal events
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (ev) => {
+      if (ev.target === modalBackdrop) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Sync across tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEY) loadFromLocal();
+    });
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFromLocal();
+    });
+
+    // Expose for debugging
     window._visitor_data = data;
     window._STORAGE_KEY = STORAGE_KEY;
   </script>
