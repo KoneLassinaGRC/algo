@@ -3,678 +3,180 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portfolio Évolutif — Algorithmique & Complexité</title>
+  <title>Portfolio — Visiteur (Algorithmique & Complexité)</title>
   <style>
     :root{
-      --bg: #ffffff;
-      --muted: #f5f6f7;
-      --card: #f8f9fa;
-      --accent: #2b6cb0;
-      --text: #1a202c;
-      --muted-text: #4a5568;
-      --danger: #e53e3e;
-      --radius: 8px;
-      --shadow: 0 1px 2px rgba(16,24,40,0.04);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --bg:#ffffff; --muted:#f7fafc; --card:#ffffff;
+      --accent:#0ea5e9; --text:#0f1724; --muted-text:#475569; --radius:10px; --shadow:0 6px 18px rgba(16,24,40,0.06);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     }
-
-    html,body{
-      height:100%;
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      font-size:16px;
-    }
-
-    .app {
-      display:flex;
-      min-height:100vh;
-      gap:24px;
-      padding:24px;
-      box-sizing:border-box;
-    }
-
-    /* Sidebar */
-    .sidebar{
-      width:320px;
-      max-width:38%;
-      background:var(--muted);
-      border-radius:var(--radius);
-      padding:16px;
-      box-shadow:var(--shadow);
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      box-sizing:border-box;
-    }
-
-    .brand {
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-    .logo {
-      width:44px;
-      height:44px;
-      background:linear-gradient(135deg,var(--accent),#63b3ed);
-      border-radius:10px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:white;
-      font-weight:700;
-      box-shadow:0 2px 6px rgba(43,108,176,0.18);
-    }
-    h1{
-      margin:0;
-      font-size:18px;
-      line-height:1;
-    }
-    .muted {
-      color:var(--muted-text);
-      font-size:13px;
-      margin-top:4px;
-    }
-
-    .controls {
-      display:flex;
-      gap:8px;
-      margin-top:8px;
-    }
-    button {
-      background:var(--accent);
-      color:white;
-      border:0;
-      padding:8px 12px;
-      border-radius:8px;
-      cursor:pointer;
-      box-shadow:none;
-      font-weight:600;
-    }
-    button.secondary {
-      background:transparent;
-      color:var(--text);
-      border:1px solid rgba(10,10,10,0.04);
-      box-shadow:none;
-      font-weight:600;
-    }
-    .list {
-      overflow:auto;
-      padding-right:6px;
-    }
-    .lesson-item{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      padding:10px;
-      background:var(--card);
-      border-radius:8px;
-      margin-bottom:8px;
-      cursor:pointer;
-      transition:background .12s;
-    }
-    .lesson-item:hover { background: #eef6ff; }
-    .lesson-item.active { outline:2px solid rgba(43,108,176,0.12); background: #e8f3ff; }
-    .lesson-title {
-      font-weight:600;
-    }
-    .lesson-meta {
-      color:var(--muted-text);
-      font-size:12px;
-    }
-    .small {
-      font-size:13px;
-    }
-    .trash {
-      background:transparent;
-      border:0;
-      color:var(--danger);
-      cursor:pointer;
-      padding:6px;
-      border-radius:6px;
-    }
-
-    /* Main area */
-    .main {
-      flex:1;
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-    }
-
-    .card {
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow:var(--shadow);
-    }
-
-    .page-header {
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .title-row {
-      display:flex;
-      gap:12px;
-      align-items:center;
-    }
-
-    input.title-input {
-      font-size:20px;
-      font-weight:700;
-      border:0;
-      background:transparent;
-      outline:none;
-      color:var(--text);
-      width:420px;
-      max-width:60vw;
-    }
-    input.title-input::placeholder { color:var(--muted-text); font-weight:600; }
-
-    label.field-label {
-      display:block;
-      font-weight:700;
-      margin-bottom:6px;
-      color:var(--text);
-    }
-
-    textarea.field {
-      width:100%;
-      min-height:120px;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid rgba(10,10,10,0.06);
-      resize:vertical;
-      background:white;
-      box-sizing:border-box;
-      color:var(--text);
-      font-size:15px;
-      font-family:inherit;
-    }
-
-    .grid-2 {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-
-    .meta-row {
-      margin-top:8px;
-      color:var(--muted-text);
-      font-size:13px;
-    }
-
-    .footer-note {
-      font-size:13px;
-      color:var(--muted-text);
-      margin-top:6px;
-    }
-
-    /* responsive */
-    @media (max-width:900px){
-      .app {
-        padding:12px;
-      }
-      .sidebar { display:none; }
-      .main { margin-left:0; }
-      input.title-input { max-width: calc(100vw - 120px); }
-    }
-
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+    .wrap{display:flex;gap:20px;min-height:100vh;padding:20px;box-sizing:border-box}
+    .sidebar{width:320px;max-width:40%;background:var(--muted);padding:14px;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#60e0ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;}
+    h1{font-size:16px;margin:0}
+    .muted{color:var(--muted-text);font-size:13px}
+    .list{overflow:auto;padding-right:6px}
+    .lesson-item{padding:10px;border-radius:8px;background:var(--card);cursor:pointer;margin-bottom:8px}
+    .lesson-title{font-weight:700}
+    .meta{font-size:12px;color:var(--muted-text)}
+    .content{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)}
+    .lesson-full{border-left:4px solid var(--accent);padding-left:12px}
+    h2{margin:0 0 8px 0}
+    p{margin:6px 0;white-space:pre-wrap}
+    .small{font-size:13px;color:var(--muted-text)}
+    .tools{display:flex;gap:8px;align-items:center}
+    @media (max-width:900px){.wrap{padding:12px}.sidebar{display:none}}
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="wrap">
     <aside class="sidebar" id="sidebar">
-      <div>
-        <div class="brand">
-          <div class="logo">AC</div>
-          <div>
-            <h1>Portfolio — Algorithmique & Complexité</h1>
-            <div class="muted">Construisez votre portfolio évolutif</div>
-          </div>
-        </div>
-
-        <div class="controls" style="margin-top:12px;">
-          <button id="addLessonBtn">Ajouter une leçon</button>
-          <button class="secondary" id="openBilanBtn">Bilan Final</button>
+      <div class="brand">
+        <div class="logo">AC</div>
+        <div>
+          <h1>Portfolio — Visiteur</h1>
+          <div class="muted">Algorithmique & Complexité — lecture seule</div>
         </div>
       </div>
 
-      <div style="margin-top:6px;font-size:13px;color:var(--muted-text);">Leçons</div>
-      <div class="list card" id="lessonsList" style="padding:12px; max-height:60vh;"></div>
+      <div style="margin-top:8px;font-size:13px;color:var(--muted-text)">Leçons</div>
+      <div id="list" class="list card" style="padding:10px;max-height:70vh"></div>
 
-      <div class="footer-note card" style="margin-top:auto;">
-        Toutes les modifications sont automatiquement enregistrées dans votre navigateur (localStorage).
+      <div class="card" style="display:flex;flex-direction:column;gap:8px">
+        <div class="small">Ce mode lit les données depuis votre navigateur (localStorage).</div>
+        <div style="display:flex;gap:8px">
+          <button id="btnReload" class="ghost" style="border:1px solid #eee;background:transparent;padding:8px;border-radius:8px">Recharger</button>
+          <label class="ghost" style="padding:8px;border-radius:8px;cursor:pointer">Importer JSON<input type="file" id="fileImport" style="display:none" accept=".json"></label>
+        </div>
+        <div class="small">Vous pouvez importer un export JSON pour afficher des données partagées.</div>
       </div>
     </aside>
 
-    <main class="main" id="main">
-      <!-- dynamic content -->
-      <div class="card">
-        <div class="page-header">
-          <div class="title-row">
-            <input id="pageTitle" class="title-input" placeholder="Sélectionnez une leçon ou le Bilan Final" readonly />
-            <div style="color:var(--muted-text); font-size:14px;" id="pageSubtitle"></div>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <button id="deleteLessonBtn" style="display:none;" class="secondary">Supprimer la leçon</button>
-            <button id="exportBtn" class="secondary">Exporter</button>
-          </div>
-        </div>
+    <main class="content" id="main">
+      <div class="card" id="topCard">
+        <h2 style="margin:0">Bienvenue</h2>
+        <div class="small">Parcourez les leçons et le bilan final. Mode lecture seule — aucune modification locale.</div>
       </div>
 
-      <div id="contentArea"></div>
+      <div id="lessonsContainer"></div>
+
+      <div class="card">
+        <h2 style="margin:0 0 8px 0">Bilan Final</h2>
+        <div id="bilanContainer" class="small"></div>
+      </div>
     </main>
   </div>
 
   <script>
-    /* STORAGE KEY */
-    const STORAGE_KEY = 'ac_portfolio_v1';
+    const STORAGE_KEY = 'ac_portfolio_v2';
+    const listEl = document.getElementById('list');
+    const lessonsContainer = document.getElementById('lessonsContainer');
+    const bilanContainer = document.getElementById('bilanContainer');
+    const btnReload = document.getElementById('btnReload');
 
-    /* In-memory data */
-    let data = {
-      lessons: [],
-      bilanFinal: {
-        appris: '',
-        competences: '',
-        defis: '',
-        prochaines: ''
-      },
-      selected: null
-    };
+    let data = { lessons: [], bilan: {} };
 
-    /* Debounce timer for saves */
-    let saveTimer = null;
-    const SAVE_DELAY = 400; // ms
-
-    /* Utility: generate ID */
-    function genId(){
-      return 'l_' + Date.now().toString(36) + '_' + Math.floor(Math.random()*9000+1000).toString(36);
-    }
-
-    /* --- Required functions (exposed globally) --- */
-
-    // Save current in-memory data to localStorage
-    function saveData(){
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        // small visual hint could be added here if desired
-      } catch (err) {
-        console.error('Échec de l\'enregistrement', err);
-      }
-    }
-    window.saveData = saveData;
-
-    // Load data from localStorage into memory and render UI
-    function loadData(){
+    function loadFromLocal(){
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
+      if (!raw) { data = { lessons: [], bilan: {} }; renderAll(); return; }
+      try {
+        data = JSON.parse(raw);
+        if (!Array.isArray(data.lessons)) data.lessons = [];
+      } catch(e){ console.error('parse',e); data = { lessons: [], bilan: {} }; }
+      renderAll();
+    }
+
+    function renderAll(){
+      // Sidebar list
+      listEl.innerHTML = '';
+      data.lessons.forEach((l, idx) => {
+        const d = document.createElement('div');
+        d.className = 'lesson-item';
+        d.tabIndex = 0;
+        d.innerHTML = `<div class="lesson-title">${escapeHtml(l.title||('Leçon '+(idx+1)))}</div><div class="meta">${l.updatedAt? 'Modifié ' + new Date(l.updatedAt).toLocaleString():''}</div>`;
+        d.addEventListener('click', ()=> {
+          // scroll to corresponding lesson in main area
+          const target = document.getElementById('lesson_' + (l.id || idx));
+          if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+        listEl.appendChild(d);
+      });
+      // bilan quick link
+      const bilanLink = document.createElement('div');
+      bilanLink.className = 'lesson-item';
+      bilanLink.innerHTML = '<div class="lesson-title">Bilan Final</div><div class="meta">Synthèse finale</div>';
+      bilanLink.onclick = () => { document.querySelector('.card h2')?.scrollIntoView({behavior:'smooth'}); };
+      listEl.appendChild(bilanLink);
+
+      // Main lessons
+      lessonsContainer.innerHTML = '';
+      if (!data.lessons.length) {
+        lessonsContainer.innerHTML = '<div class="card small">Aucune leçon disponible.</div>';
+      } else {
+        data.lessons.forEach((l, idx) => {
+          const wrap = document.createElement('div');
+          wrap.className = 'card lesson-full';
+          wrap.id = 'lesson_' + (l.id || idx);
+          wrap.innerHTML = `<h2>${escapeHtml(l.title || ('Leçon '+(idx+1)))}</h2>
+            <strong>Journal d'apprentissage réflexif</strong><p>${escapeHtml(l.journal||'')}</p>
+            <strong>Synthèse personnelle</strong><p>${escapeHtml(l.synthese||'')}</p>
+            <strong>Application pratique</strong><p>${escapeHtml(l.application||'')}</p>
+            <strong>Ce que je maîtrise bien</strong><p>${escapeHtml(l.maitrise||'')}</p>
+            <strong>Ce que je dois améliorer</strong><p>${escapeHtml(l.ameliorer||'')}</p>
+            <strong>Stratégie pour progresser</strong><p>${escapeHtml(l.strategie||'')}</p>
+          `;
+          lessonsContainer.appendChild(wrap);
+        });
+      }
+
+      // Bilan
+      const b = data.bilan || {};
+      bilanContainer.innerHTML = `<strong>Ce que j’ai le plus appris</strong><p>${escapeHtml(b.appris||'')}</p>
+        <strong>Les compétences que je peux réutiliser ailleurs</strong><p>${escapeHtml(b.competences||'')}</p>
+        <strong>Mon plus grand défi</strong><p>${escapeHtml(b.defis||'')}</p>
+        <strong>Mes prochaines étapes d'apprentissage</strong><p>${escapeHtml(b.prochaines||'')}</p>`;
+    }
+
+    function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\n/g,'<br>'); }
+
+    // Import JSON to display (does not auto-save to localStorage unless user chooses)
+    document.getElementById('fileImport').addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
         try {
-          const parsed = JSON.parse(raw);
-          // Basic migration: ensure structure exists
-          data = Object.assign({
-            lessons: [],
-            bilanFinal: {appris:'', competences:'', defis:'', prochaines:''},
-            selected: null
-          }, parsed);
-          if (!Array.isArray(data.lessons)) data.lessons = [];
-        } catch (err) {
-          console.error('Impossible de parser les données sauvegardées, réinitialisation.', err);
-          data = { lessons: [], bilanFinal:{appris:'',competences:'',defis:'',prochaines:''}, selected: null };
-        }
-      } else {
-        // initialize with a default lesson
-        const id = genId();
-        data.lessons = [{
-          id,
-          title: 'Leçon 1 — Bases',
-          journal: '',
-          synthese: '',
-          application: '',
-          maitrise: '',
-          ameliorer: '',
-          strategie: '',
-          updatedAt: Date.now()
-        }];
-        data.selected = id;
-        saveData();
-      }
-
-      // If nothing selected, select first lesson or bilan if no lessons
-      if (!data.selected) {
-        data.selected = data.lessons.length ? data.lessons[0].id : 'bilan';
-      }
-
-      renderSidebar();
-      renderMain();
-    }
-    window.loadData = loadData;
-
-    // Create a new lesson and open it
-    function createLesson(){
-      const id = genId();
-      const count = data.lessons.length + 1;
-      const lesson = {
-        id,
-        title: `Leçon ${count}`,
-        journal: '',
-        synthese: '',
-        application: '',
-        maitrise: '',
-        ameliorer: '',
-        strategie: '',
-        updatedAt: Date.now()
+          const parsed = JSON.parse(r.result);
+          if (parsed && parsed.lessons) {
+            data = parsed;
+            renderAll();
+            alert('Import effectué (affichage local). Pour partager, les utilisateurs peuvent importer ce fichier dans leur navigateur.');
+          } else alert('Fichier JSON invalide (attendu structure { lessons: [...], bilan: {...} })');
+        } catch(err){ alert('Impossible de parser le JSON'); console.error(err); }
       };
-      data.lessons.push(lesson);
-      data.selected = id;
-      saveData();
-      renderSidebar();
-      renderMain();
-      return id;
-    }
-    window.createLesson = createLesson;
-
-    // Delete a lesson by id
-    function deleteLesson(id){
-      const idx = data.lessons.findIndex(l => l.id === id);
-      if (idx === -1) return;
-      if (!confirm('Supprimer cette leçon ? Cette action est irréversible.')) return;
-      data.lessons.splice(idx,1);
-      // if the deleted was selected, select next available or bilan
-      if (data.selected === id) {
-        data.selected = data.lessons.length ? data.lessons[0].id : 'bilan';
-      }
-      saveData();
-      renderSidebar();
-      renderMain();
-    }
-    window.deleteLesson = deleteLesson;
-
-    /* --- UI rendering & interactions --- */
-
-    const lessonsList = document.getElementById('lessonsList');
-    const addLessonBtn = document.getElementById('addLessonBtn');
-    const openBilanBtn = document.getElementById('openBilanBtn');
-    const pageTitle = document.getElementById('pageTitle');
-    const pageSubtitle = document.getElementById('pageSubtitle');
-    const contentArea = document.getElementById('contentArea');
-    const deleteLessonBtn = document.getElementById('deleteLessonBtn');
-    const exportBtn = document.getElementById('exportBtn');
-
-    function renderSidebar(){
-      lessonsList.innerHTML = '';
-
-      // render lessons
-      data.lessons.forEach(lesson => {
-        const el = document.createElement('div');
-        el.className = 'lesson-item' + (data.selected === lesson.id ? ' active' : '');
-        el.title = lesson.title || 'Leçon';
-        el.tabIndex = 0;
-
-        const left = document.createElement('div');
-        left.style.display = 'flex';
-        left.style.flexDirection = 'column';
-        left.style.gap = '2px';
-
-        const title = document.createElement('div');
-        title.className = 'lesson-title';
-        title.textContent = lesson.title || 'Leçon';
-        left.appendChild(title);
-
-        const meta = document.createElement('div');
-        meta.className = 'lesson-meta';
-        meta.textContent = lesson.updatedAt ? 'Modifié ' + new Date(lesson.updatedAt).toLocaleString() : '';
-        left.appendChild(meta);
-
-        el.appendChild(left);
-
-        const right = document.createElement('div');
-        right.style.display = 'flex';
-        right.style.gap = '6px';
-        right.style.alignItems = 'center';
-
-        const del = document.createElement('button');
-        del.className = 'trash';
-        del.innerHTML = '🗑';
-        del.title = 'Supprimer la leçon';
-        del.onclick = (ev) => {
-          ev.stopPropagation();
-          deleteLesson(lesson.id);
-        };
-
-        right.appendChild(del);
-        el.appendChild(right);
-
-        el.onclick = () => {
-          data.selected = lesson.id;
-          renderSidebar();
-          renderMain();
-        };
-
-        el.onkeydown = (e) => {
-          if (e.key === 'Enter') el.click();
-        };
-
-        lessonsList.appendChild(el);
-      });
-
-      // Bilan quick entry at the bottom of the list
-      const bilanBtn = document.createElement('div');
-      bilanBtn.className = 'lesson-item' + (data.selected === 'bilan' ? ' active' : '');
-      bilanBtn.style.marginTop = '8px';
-      bilanBtn.tabIndex = 0;
-      bilanBtn.onclick = () => {
-        data.selected = 'bilan';
-        renderSidebar();
-        renderMain();
-      };
-      bilanBtn.innerHTML = '<div><div class="lesson-title">Bilan Final</div><div class="lesson-meta">Synthèse finale du cours</div></div>';
-      lessonsList.appendChild(bilanBtn);
-    }
-
-    function renderMain(){
-      // Update title area
-      if (data.selected === 'bilan') {
-        pageTitle.value = 'Bilan Final';
-        pageTitle.readOnly = true;
-        pageSubtitle.textContent = 'Synthèse finale et prochaines étapes';
-        deleteLessonBtn.style.display = 'none';
-        // render bilan page
-        renderBilan();
-      } else {
-        const lesson = data.lessons.find(l => l.id === data.selected);
-        if (!lesson) {
-          pageTitle.value = '';
-          pageTitle.placeholder = 'Sélectionnez une leçon';
-          pageSubtitle.textContent = '';
-          contentArea.innerHTML = '<div class="card small">Aucune leçon sélectionnée.</div>';
-          deleteLessonBtn.style.display = 'none';
-          return;
-        }
-        pageTitle.readOnly = false;
-        pageTitle.value = lesson.title || 'Leçon';
-        pageSubtitle.textContent = 'Dernière modification: ' + (lesson.updatedAt ? new Date(lesson.updatedAt).toLocaleString() : '—');
-        deleteLessonBtn.style.display = 'inline-block';
-        deleteLessonBtn.onclick = () => deleteLesson(lesson.id);
-        // render lesson page
-        renderLesson(lesson);
-      }
-    }
-
-    function renderLesson(lesson){
-      contentArea.innerHTML = '';
-
-      // Journal d’apprentissage réflexif
-      const cardJournal = document.createElement('div');
-      cardJournal.className = 'card';
-      cardJournal.innerHTML = `
-        <label class="field-label">Journal d'apprentissage réflexif</label>
-        <div class="small" style="margin-bottom:8px;color:var(--muted-text)">
-          Écrivez 5–10 lignes sur ce que vous avez appris, vos succès, difficultés et ressentis.
-        </div>
-        <textarea class="field" data-field="journal" placeholder="Mon journal..."></textarea>
-      `;
-      contentArea.appendChild(cardJournal);
-
-      // Synthèse personnelle
-      const cardSynth = document.createElement('div');
-      cardSynth.className = 'card';
-      cardSynth.innerHTML = `
-        <label class="field-label">Synthèse personnelle des concepts clés</label>
-        <div class="small" style="margin-bottom:8px;color:var(--muted-text)">
-          Résumez les principaux concepts dans vos propres mots.
-        </div>
-        <textarea class="field" data-field="synthese" placeholder="Synthèse..."></textarea>
-      `;
-      contentArea.appendChild(cardSynth);
-
-      // Application pratique
-      const cardApp = document.createElement('div');
-      cardApp.className = 'card';
-      cardApp.innerHTML = `
-        <label class="field-label">Application pratique dans mon contexte</label>
-        <div class="small" style="margin-bottom:8px;color:var(--muted-text)">
-          Comment appliquez-vous ces concepts dans vos études, travail ou projets personnels ?
-        </div>
-        <textarea class="field" data-field="application" placeholder="Application..."></textarea>
-      `;
-      contentArea.appendChild(cardApp);
-
-      // Auto-évaluation et méta-cognition (3 fields)
-      const cardMeta = document.createElement('div');
-      cardMeta.className = 'card';
-      cardMeta.innerHTML = `
-        <label class="field-label">Auto-évaluation et méta-cognition</label>
-        <div class="grid-2" style="margin-top:8px;">
-          <div>
-            <label class="field-label">Ce que je maîtrise bien :</label>
-            <textarea class="field" data-field="maitrise" placeholder="Ce que je maîtrise..."></textarea>
-          </div>
-          <div>
-            <label class="field-label">Ce que je dois améliorer :</label>
-            <textarea class="field" data-field="ameliorer" placeholder="Ce que je dois améliorer..."></textarea>
-          </div>
-        </div>
-        <div style="margin-top:12px;">
-          <label class="field-label">Stratégie pour progresser :</label>
-          <textarea class="field" data-field="strategie" placeholder="Ma stratégie..."></textarea>
-        </div>
-      `;
-      contentArea.appendChild(cardMeta);
-
-      // Bind values and events
-      // Title input binding
-      pageTitle.oninput = (e) => {
-        lesson.title = e.target.value;
-        lesson.updatedAt = Date.now();
-        scheduleSave();
-        renderSidebar(); // update list titles
-      };
-
-      // textareas
-      const areas = contentArea.querySelectorAll('textarea.field');
-      areas.forEach(area => {
-        const field = area.getAttribute('data-field');
-        area.value = lesson[field] || '';
-        area.oninput = (e) => {
-          lesson[field] = e.target.value;
-          lesson.updatedAt = Date.now();
-          scheduleSave();
-          // update subtitle
-          pageSubtitle.textContent = 'Dernière modification: ' + new Date(lesson.updatedAt).toLocaleString();
-        };
-      });
-    }
-
-    function renderBilan(){
-      contentArea.innerHTML = '';
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;">
-          <div>
-            <label class="field-label">Ce que j’ai le plus appris dans ce cours</label>
-            <textarea class="field" data-field="appris" placeholder="Ce que j'ai appris..."></textarea>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label class="field-label">Les compétences que je peux réutiliser ailleurs</label>
-          <textarea class="field" data-field="competences" placeholder="Compétences réutilisables..."></textarea>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label class="field-label">Mon plus grand défi</label>
-          <textarea class="field" data-field="defis" placeholder="Mon défi..."></textarea>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label class="field-label">Mes prochaines étapes d'apprentissage</label>
-          <textarea class="field" data-field="prochaines" placeholder="Prochaines étapes..."></textarea>
-        </div>
-      `;
-      contentArea.appendChild(card);
-
-      // Bind values/events
-      const fields = card.querySelectorAll('textarea.field');
-      fields.forEach(area => {
-        const f = area.getAttribute('data-field');
-        area.value = data.bilanFinal[f] || '';
-        area.oninput = (e) => {
-          data.bilanFinal[f] = e.target.value;
-          scheduleSave();
-        };
-      });
-    }
-
-    /* Save scheduling (debounced) */
-    function scheduleSave(){
-      if (saveTimer) clearTimeout(saveTimer);
-      saveTimer = setTimeout(() => {
-        saveData();
-        saveTimer = null;
-      }, SAVE_DELAY);
-    }
-
-    /* Buttons */
-    addLessonBtn.onclick = () => createLesson();
-    openBilanBtn.onclick = () => {
-      data.selected = 'bilan';
-      renderSidebar();
-      renderMain();
-    };
-
-    exportBtn.onclick = () => {
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'portfolio_ac_export.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    };
-
-    /* Ensure data saved on unload */
-    window.addEventListener('beforeunload', () => {
-      if (saveTimer) clearTimeout(saveTimer);
-      saveData();
+      r.readAsText(f);
+      e.target.value = '';
     });
 
-    /* Initialize */
-    document.addEventListener('DOMContentLoaded', () => {
-      loadData();
+    // Buttons
+    btnReload.addEventListener('click', loadFromLocal);
+
+    // Periodically sync with localStorage if it changes in another tab
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEY) {
+        loadFromLocal();
+      }
     });
 
-    /* Expose functions for console usage */
-    window._portfolio_data = data;
-    window._storageKey = STORAGE_KEY;
+    // initial load
+    document.addEventListener('DOMContentLoaded', loadFromLocal);
 
+    // expose for debugging
+    window._visitor_data = data;
+    window._STORAGE_KEY = STORAGE_KEY;
   </script>
 </body>
 </html>
