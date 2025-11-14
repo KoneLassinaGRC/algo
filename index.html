@@ -1,276 +1,679 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portfolio Évolutif – Algorithmique & Complexité</title>
+  <title>Portfolio Évolutif — Algorithmique & Complexité</title>
   <style>
-    :root{--bg:#f6f7fb;--card:#ffffff;--primary:#0b5cff;--muted:#6b7280}
-    *{box-sizing:border-box}
-    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0;background:var(--bg);color:#0f172a}
-    header{background:linear-gradient(90deg,#0b5cff22,transparent);padding:28px 20px;border-bottom:1px solid #e6eefc}
-    .wrap{max-width:1100px;margin:18px auto;padding:0 16px}
-    h1{margin:0;font-size:20px}
-    .subtitle{color:var(--muted);font-size:13px;margin-top:4px}
-    nav.top{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}
-    .btn{background:var(--primary);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600}
-    .ghost{background:transparent;border:1px solid #d1e0ff;color:var(--primary)}
+    :root{
+      --bg: #ffffff;
+      --muted: #f5f6f7;
+      --card: #f8f9fa;
+      --accent: #2b6cb0;
+      --text: #1a202c;
+      --muted-text: #4a5568;
+      --danger: #e53e3e;
+      --radius: 8px;
+      --shadow: 0 1px 2px rgba(16,24,40,0.04);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
 
-    .layout{display:grid;grid-template-columns:260px 1fr;gap:20px;margin-top:20px}
-    aside{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(11,92,255,0.06)}
-    .lesson-list{display:flex;flex-direction:column;gap:8px}
-    .lesson-item{padding:8px 10px;border-radius:8px;cursor:pointer;color:#0b5cff}
-    .lesson-item.active{background:#eef4ff}
-    main{min-height:60vh}
+    html,body{
+      height:100%;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      font-size:16px;
+    }
 
-    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.05);margin-bottom:18px}
-    label{font-weight:700;font-size:13px}
-    textarea,input[type=text],select{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px solid #e6eefc;background:#fbfdff}
-    textarea{min-height:110px;resize:vertical}
-    .row{display:flex;gap:12px}
-    .row .col{flex:1}
-    .meta{color:var(--muted);font-size:13px;margin-top:6px}
-    .small{font-size:13px;color:var(--muted)}
-    footer{padding:18px 0;color:var(--muted);text-align:center}
+    .app {
+      display:flex;
+      min-height:100vh;
+      gap:24px;
+      padding:24px;
+      box-sizing:border-box;
+    }
 
-    .top-actions{display:flex;gap:8px;align-items:center}
-    .controls{display:flex;gap:8px;margin-top:10px}
-    @media(max-width:900px){.layout{grid-template-columns:1fr}.aside-hidden{display:none}}
+    /* Sidebar */
+    .sidebar{
+      width:320px;
+      max-width:38%;
+      background:var(--muted);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      box-sizing:border-box;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .logo {
+      width:44px;
+      height:44px;
+      background:linear-gradient(135deg,var(--accent),#63b3ed);
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:700;
+      box-shadow:0 2px 6px rgba(43,108,176,0.18);
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      line-height:1;
+    }
+    .muted {
+      color:var(--muted-text);
+      font-size:13px;
+      margin-top:4px;
+    }
+
+    .controls {
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+    }
+    button {
+      background:var(--accent);
+      color:white;
+      border:0;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      box-shadow:none;
+      font-weight:600;
+    }
+    button.secondary {
+      background:transparent;
+      color:var(--text);
+      border:1px solid rgba(10,10,10,0.04);
+      box-shadow:none;
+      font-weight:600;
+    }
+    .list {
+      overflow:auto;
+      padding-right:6px;
+    }
+    .lesson-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:10px;
+      background:var(--card);
+      border-radius:8px;
+      margin-bottom:8px;
+      cursor:pointer;
+      transition:background .12s;
+    }
+    .lesson-item:hover { background: #eef6ff; }
+    .lesson-item.active { outline:2px solid rgba(43,108,176,0.12); background: #e8f3ff; }
+    .lesson-title {
+      font-weight:600;
+    }
+    .lesson-meta {
+      color:var(--muted-text);
+      font-size:12px;
+    }
+    .small {
+      font-size:13px;
+    }
+    .trash {
+      background:transparent;
+      border:0;
+      color:var(--danger);
+      cursor:pointer;
+      padding:6px;
+      border-radius:6px;
+    }
+
+    /* Main area */
+    .main {
+      flex:1;
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .card {
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .page-header {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .title-row {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    input.title-input {
+      font-size:20px;
+      font-weight:700;
+      border:0;
+      background:transparent;
+      outline:none;
+      color:var(--text);
+      width:420px;
+      max-width:60vw;
+    }
+    input.title-input::placeholder { color:var(--muted-text); font-weight:600; }
+
+    label.field-label {
+      display:block;
+      font-weight:700;
+      margin-bottom:6px;
+      color:var(--text);
+    }
+
+    textarea.field {
+      width:100%;
+      min-height:120px;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid rgba(10,10,10,0.06);
+      resize:vertical;
+      background:white;
+      box-sizing:border-box;
+      color:var(--text);
+      font-size:15px;
+      font-family:inherit;
+    }
+
+    .grid-2 {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .meta-row {
+      margin-top:8px;
+      color:var(--muted-text);
+      font-size:13px;
+    }
+
+    .footer-note {
+      font-size:13px;
+      color:var(--muted-text);
+      margin-top:6px;
+    }
+
+    /* responsive */
+    @media (max-width:900px){
+      .app {
+        padding:12px;
+      }
+      .sidebar { display:none; }
+      .main { margin-left:0; }
+      input.title-input { max-width: calc(100vw - 120px); }
+    }
+
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <h1>📒 Portfolio Évolutif – Algorithmique et Complexité</h1>
-      <div class="subtitle">Template interactif — sauvegarde locale (localStorage). Tu peux ajouter/modifier les leçons, exporter et intégrer dans GitHub Pages.</div>
-      <nav class="top">
-        <div class="top-actions">
-          <button id="addLessonBtn" class="btn">➕ Nouvelle leçon</button>
-          <button id="exportJsonBtn" class="btn ghost">⬇️ Export JSON</button>
-          <button id="downloadHtmlBtn" class="btn">📄 Télécharger HTML</button>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div>
+        <div class="brand">
+          <div class="logo">AC</div>
+          <div>
+            <h1>Portfolio — Algorithmique & Complexité</h1>
+            <div class="muted">Construisez votre portfolio évolutif</div>
+          </div>
         </div>
-        <div style="margin-left:auto" class="small">Astuce : ton travail est sauvegardé localement dans ton navigateur.</div>
-      </nav>
-    </div>
-  </header>
 
-  <section class="wrap layout">
-    <aside id="sidebar">
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>Leçons</strong>
-          <button id="resetBtn" class="ghost btn" style="padding:6px 8px">Réinitialiser</button>
+        <div class="controls" style="margin-top:12px;">
+          <button id="addLessonBtn">Ajouter une leçon</button>
+          <button class="secondary" id="openBilanBtn">Bilan Final</button>
         </div>
-        <p class="meta">Clique sur une leçon pour l'éditer. Les changements sont auto-enregistrés.</p>
       </div>
-      <div class="card lesson-list" id="lessonsList"></div>
-      <div class="card">
-        <label>Importer JSON</label>
-        <input id="importFile" type="file" accept="application/json" />
-        <p class="small">Importer un export JSON pour restaurer un portfolio.</p>
+
+      <div style="margin-top:6px;font-size:13px;color:var(--muted-text);">Leçons</div>
+      <div class="list card" id="lessonsList" style="padding:12px; max-height:60vh;"></div>
+
+      <div class="footer-note card" style="margin-top:auto;">
+        Toutes les modifications sont automatiquement enregistrées dans votre navigateur (localStorage).
       </div>
     </aside>
 
-    <main>
-      <div id="editorArea"></div>
+    <main class="main" id="main">
+      <!-- dynamic content -->
       <div class="card">
-        <h3>🔎 Bilan final (à remplir en fin de semestre)</h3>
-        <label>1. Ce que j’ai le plus appris</label>
-        <textarea id="bilan1"></textarea>
-        <label>2. Les compétences que je peux réutiliser ailleurs</label>
-        <textarea id="bilan2"></textarea>
-        <label>3. Mon plus grand défi</label>
-        <textarea id="bilan3"></textarea>
-        <label>4. Mes prochaines étapes d’apprentissage</label>
-        <textarea id="bilan4"></textarea>
-        <div class="controls" style="margin-top:12px">
-          <button id="saveBilan" class="btn">💾 Sauvegarder bilan</button>
-          <button id="clearBilan" class="btn ghost">🧹 Effacer bilan</button>
+        <div class="page-header">
+          <div class="title-row">
+            <input id="pageTitle" class="title-input" placeholder="Sélectionnez une leçon ou le Bilan Final" readonly />
+            <div style="color:var(--muted-text); font-size:14px;" id="pageSubtitle"></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button id="deleteLessonBtn" style="display:none;" class="secondary">Supprimer la leçon</button>
+            <button id="exportBtn" class="secondary">Exporter</button>
+          </div>
         </div>
       </div>
-    </main>
-  </section>
 
-  <footer>
-    Développé pour ton projet • Exportable vers GitHub Pages • Sauvegarde locale automatique
-  </footer>
+      <div id="contentArea"></div>
+    </main>
+  </div>
 
   <script>
-    // ----- Storage keys & defaults -----
-    const STORAGE_KEY = 'portfolio_algo_v1'
-    const BILAN_KEY = 'portfolio_algo_bilan_v1'
+    /* STORAGE KEY */
+    const STORAGE_KEY = 'ac_portfolio_v1';
 
-    // ----- Initial sample data -----
-    const sample = {
-      lessons: [
-        {id: id(), title: 'Leçon 1 — Notation Big O', journal:'', synthese:'', application:'', auto:['','', '']},
-        {id: id(), title: 'Leçon 2 — Structures de données', journal:'', synthese:'', application:'', auto:['','', '']}
-      ]
+    /* In-memory data */
+    let data = {
+      lessons: [],
+      bilanFinal: {
+        appris: '',
+        competences: '',
+        defis: '',
+        prochaines: ''
+      },
+      selected: null
+    };
+
+    /* Debounce timer for saves */
+    let saveTimer = null;
+    const SAVE_DELAY = 400; // ms
+
+    /* Utility: generate ID */
+    function genId(){
+      return 'l_' + Date.now().toString(36) + '_' + Math.floor(Math.random()*9000+1000).toString(36);
     }
 
-    // ----- State -----
-    let data = load() || structuredClone(sample)
-    let activeLessonId = data.lessons.length ? data.lessons[0].id : null
+    /* --- Required functions (exposed globally) --- */
 
-    // ----- Elements -----
-    const lessonsList = document.getElementById('lessonsList')
-    const editorArea = document.getElementById('editorArea')
-    const addLessonBtn = document.getElementById('addLessonBtn')
-    const exportJsonBtn = document.getElementById('exportJsonBtn')
-    const downloadHtmlBtn = document.getElementById('downloadHtmlBtn')
-    const resetBtn = document.getElementById('resetBtn')
-    const importFile = document.getElementById('importFile')
+    // Save current in-memory data to localStorage
+    function saveData(){
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        // small visual hint could be added here if desired
+      } catch (err) {
+        console.error('Échec de l\'enregistrement', err);
+      }
+    }
+    window.saveData = saveData;
 
-    const bilanFields = ['bilan1','bilan2','bilan3','bilan4'].map(id=>document.getElementById(id))
-    document.getElementById('saveBilan').addEventListener('click',saveBilan)
-    document.getElementById('clearBilan').addEventListener('click',clearBilan)
+    // Load data from localStorage into memory and render UI
+    function loadData(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          // Basic migration: ensure structure exists
+          data = Object.assign({
+            lessons: [],
+            bilanFinal: {appris:'', competences:'', defis:'', prochaines:''},
+            selected: null
+          }, parsed);
+          if (!Array.isArray(data.lessons)) data.lessons = [];
+        } catch (err) {
+          console.error('Impossible de parser les données sauvegardées, réinitialisation.', err);
+          data = { lessons: [], bilanFinal:{appris:'',competences:'',defis:'',prochaines:''}, selected: null };
+        }
+      } else {
+        // initialize with a default lesson
+        const id = genId();
+        data.lessons = [{
+          id,
+          title: 'Leçon 1 — Bases',
+          journal: '',
+          synthese: '',
+          application: '',
+          maitrise: '',
+          ameliorer: '',
+          strategie: '',
+          updatedAt: Date.now()
+        }];
+        data.selected = id;
+        saveData();
+      }
 
-    // ----- Init -----
-    renderLessons()
-    renderEditor()
-    loadBilan()
+      // If nothing selected, select first lesson or bilan if no lessons
+      if (!data.selected) {
+        data.selected = data.lessons.length ? data.lessons[0].id : 'bilan';
+      }
 
-    // ----- Event bindings -----
-    addLessonBtn.addEventListener('click',()=>{
-      const title = prompt('Titre de la nouvelle leçon (ex: Leçon 3 - Tri)') || 'Nouvelle leçon'
-      const lesson = {id:id(), title, journal:'', synthese:'', application:'', auto:['','', '']}
-      data.lessons.push(lesson)
-      activeLessonId = lesson.id
-      save(); renderLessons(); renderEditor()
-    })
+      renderSidebar();
+      renderMain();
+    }
+    window.loadData = loadData;
 
-    exportJsonBtn.addEventListener('click', ()=>{
-      const blob = new Blob([JSON.stringify(data, null, 2)],{type:'application/json'})
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a'); a.href=url; a.download='portfolio_algo_export.json'; a.click(); URL.revokeObjectURL(url)
-    })
+    // Create a new lesson and open it
+    function createLesson(){
+      const id = genId();
+      const count = data.lessons.length + 1;
+      const lesson = {
+        id,
+        title: `Leçon ${count}`,
+        journal: '',
+        synthese: '',
+        application: '',
+        maitrise: '',
+        ameliorer: '',
+        strategie: '',
+        updatedAt: Date.now()
+      };
+      data.lessons.push(lesson);
+      data.selected = id;
+      saveData();
+      renderSidebar();
+      renderMain();
+      return id;
+    }
+    window.createLesson = createLesson;
 
-    downloadHtmlBtn.addEventListener('click', ()=>{
-      const html = buildStandaloneHTML()
-      const blob = new Blob([html],{type:'text/html'})
-      const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='portfolio_algo.html'; a.click(); URL.revokeObjectURL(url)
-    })
+    // Delete a lesson by id
+    function deleteLesson(id){
+      const idx = data.lessons.findIndex(l => l.id === id);
+      if (idx === -1) return;
+      if (!confirm('Supprimer cette leçon ? Cette action est irréversible.')) return;
+      data.lessons.splice(idx,1);
+      // if the deleted was selected, select next available or bilan
+      if (data.selected === id) {
+        data.selected = data.lessons.length ? data.lessons[0].id : 'bilan';
+      }
+      saveData();
+      renderSidebar();
+      renderMain();
+    }
+    window.deleteLesson = deleteLesson;
 
-    resetBtn.addEventListener('click',()=>{
-      if(!confirm('Réinitialiser le portfolio ? (supprime les données locales)')) return
-      localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(BILAN_KEY); data = structuredClone(sample); activeLessonId = data.lessons[0].id; renderLessons(); renderEditor(); clearBilan()
-    })
+    /* --- UI rendering & interactions --- */
 
-    importFile.addEventListener('change', async (e)=>{
-      const f = e.target.files[0]; if(!f) return
-      const txt = await f.text()
-      try{ const parsed = JSON.parse(txt); if(parsed.lessons){data=parsed; save(); renderLessons(); renderEditor(); alert('Import réussi')} else throw '' }catch(err){alert('Fichier non valide')}
-      e.target.value = ''
-    })
+    const lessonsList = document.getElementById('lessonsList');
+    const addLessonBtn = document.getElementById('addLessonBtn');
+    const openBilanBtn = document.getElementById('openBilanBtn');
+    const pageTitle = document.getElementById('pageTitle');
+    const pageSubtitle = document.getElementById('pageSubtitle');
+    const contentArea = document.getElementById('contentArea');
+    const deleteLessonBtn = document.getElementById('deleteLessonBtn');
+    const exportBtn = document.getElementById('exportBtn');
 
-    // ----- Functions -----
-    function renderLessons(){
-      lessonsList.innerHTML = ''
-      data.lessons.forEach(l=>{
-        const div = document.createElement('div')
-        div.className = 'lesson-item' + (l.id===activeLessonId?' active':'')
-        div.textContent = l.title
-        div.addEventListener('click',()=>{activeLessonId=l.id; renderLessons(); renderEditor()})
-        lessonsList.appendChild(div)
-      })
+    function renderSidebar(){
+      lessonsList.innerHTML = '';
+
+      // render lessons
+      data.lessons.forEach(lesson => {
+        const el = document.createElement('div');
+        el.className = 'lesson-item' + (data.selected === lesson.id ? ' active' : '');
+        el.title = lesson.title || 'Leçon';
+        el.tabIndex = 0;
+
+        const left = document.createElement('div');
+        left.style.display = 'flex';
+        left.style.flexDirection = 'column';
+        left.style.gap = '2px';
+
+        const title = document.createElement('div');
+        title.className = 'lesson-title';
+        title.textContent = lesson.title || 'Leçon';
+        left.appendChild(title);
+
+        const meta = document.createElement('div');
+        meta.className = 'lesson-meta';
+        meta.textContent = lesson.updatedAt ? 'Modifié ' + new Date(lesson.updatedAt).toLocaleString() : '';
+        left.appendChild(meta);
+
+        el.appendChild(left);
+
+        const right = document.createElement('div');
+        right.style.display = 'flex';
+        right.style.gap = '6px';
+        right.style.alignItems = 'center';
+
+        const del = document.createElement('button');
+        del.className = 'trash';
+        del.innerHTML = '🗑';
+        del.title = 'Supprimer la leçon';
+        del.onclick = (ev) => {
+          ev.stopPropagation();
+          deleteLesson(lesson.id);
+        };
+
+        right.appendChild(del);
+        el.appendChild(right);
+
+        el.onclick = () => {
+          data.selected = lesson.id;
+          renderSidebar();
+          renderMain();
+        };
+
+        el.onkeydown = (e) => {
+          if (e.key === 'Enter') el.click();
+        };
+
+        lessonsList.appendChild(el);
+      });
+
+      // Bilan quick entry at the bottom of the list
+      const bilanBtn = document.createElement('div');
+      bilanBtn.className = 'lesson-item' + (data.selected === 'bilan' ? ' active' : '');
+      bilanBtn.style.marginTop = '8px';
+      bilanBtn.tabIndex = 0;
+      bilanBtn.onclick = () => {
+        data.selected = 'bilan';
+        renderSidebar();
+        renderMain();
+      };
+      bilanBtn.innerHTML = '<div><div class="lesson-title">Bilan Final</div><div class="lesson-meta">Synthèse finale du cours</div></div>';
+      lessonsList.appendChild(bilanBtn);
     }
 
-    function renderEditor(){
-      const lesson = data.lessons.find(x=>x.id===activeLessonId)
-      if(!lesson){ editorArea.innerHTML = '<div class="card"><em>Aucune leçon disponible. Crée-en une.</em></div>'; return }
-      editorArea.innerHTML = `
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <input id="titleInput" type="text" value="${escapeHtml(lesson.title)}" />
-              <div class="small meta">Titre de la leçon</div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <button id="renameBtn" class="btn">🔤 Renommer</button>
-              <button id="deleteBtn" class="btn ghost">🗑️ Supprimer</button>
-            </div>
+    function renderMain(){
+      // Update title area
+      if (data.selected === 'bilan') {
+        pageTitle.value = 'Bilan Final';
+        pageTitle.readOnly = true;
+        pageSubtitle.textContent = 'Synthèse finale et prochaines étapes';
+        deleteLessonBtn.style.display = 'none';
+        // render bilan page
+        renderBilan();
+      } else {
+        const lesson = data.lessons.find(l => l.id === data.selected);
+        if (!lesson) {
+          pageTitle.value = '';
+          pageTitle.placeholder = 'Sélectionnez une leçon';
+          pageSubtitle.textContent = '';
+          contentArea.innerHTML = '<div class="card small">Aucune leçon sélectionnée.</div>';
+          deleteLessonBtn.style.display = 'none';
+          return;
+        }
+        pageTitle.readOnly = false;
+        pageTitle.value = lesson.title || 'Leçon';
+        pageSubtitle.textContent = 'Dernière modification: ' + (lesson.updatedAt ? new Date(lesson.updatedAt).toLocaleString() : '—');
+        deleteLessonBtn.style.display = 'inline-block';
+        deleteLessonBtn.onclick = () => deleteLesson(lesson.id);
+        // render lesson page
+        renderLesson(lesson);
+      }
+    }
+
+    function renderLesson(lesson){
+      contentArea.innerHTML = '';
+
+      // Journal d’apprentissage réflexif
+      const cardJournal = document.createElement('div');
+      cardJournal.className = 'card';
+      cardJournal.innerHTML = `
+        <label class="field-label">Journal d'apprentissage réflexif</label>
+        <div class="small" style="margin-bottom:8px;color:var(--muted-text)">
+          Écrivez 5–10 lignes sur ce que vous avez appris, vos succès, difficultés et ressentis.
+        </div>
+        <textarea class="field" data-field="journal" placeholder="Mon journal..."></textarea>
+      `;
+      contentArea.appendChild(cardJournal);
+
+      // Synthèse personnelle
+      const cardSynth = document.createElement('div');
+      cardSynth.className = 'card';
+      cardSynth.innerHTML = `
+        <label class="field-label">Synthèse personnelle des concepts clés</label>
+        <div class="small" style="margin-bottom:8px;color:var(--muted-text)">
+          Résumez les principaux concepts dans vos propres mots.
+        </div>
+        <textarea class="field" data-field="synthese" placeholder="Synthèse..."></textarea>
+      `;
+      contentArea.appendChild(cardSynth);
+
+      // Application pratique
+      const cardApp = document.createElement('div');
+      cardApp.className = 'card';
+      cardApp.innerHTML = `
+        <label class="field-label">Application pratique dans mon contexte</label>
+        <div class="small" style="margin-bottom:8px;color:var(--muted-text)">
+          Comment appliquez-vous ces concepts dans vos études, travail ou projets personnels ?
+        </div>
+        <textarea class="field" data-field="application" placeholder="Application..."></textarea>
+      `;
+      contentArea.appendChild(cardApp);
+
+      // Auto-évaluation et méta-cognition (3 fields)
+      const cardMeta = document.createElement('div');
+      cardMeta.className = 'card';
+      cardMeta.innerHTML = `
+        <label class="field-label">Auto-évaluation et méta-cognition</label>
+        <div class="grid-2" style="margin-top:8px;">
+          <div>
+            <label class="field-label">Ce que je maîtrise bien :</label>
+            <textarea class="field" data-field="maitrise" placeholder="Ce que je maîtrise..."></textarea>
           </div>
-          <hr style="margin:14px 0;border:none;border-top:1px solid #f0f6ff" />
-          <label>1. Journal d’apprentissage réflexif (5-10 lignes)</label>
-          <textarea id="journal">${escapeHtml(lesson.journal||'')}</textarea>
-
-          <label style="margin-top:12px">2. Synthèse personnelle des concepts clés</label>
-          <textarea id="synthese">${escapeHtml(lesson.synthese||'')}</textarea>
-
-          <label style="margin-top:12px">3. Application pratique dans mon contexte</label>
-          <textarea id="application">${escapeHtml(lesson.application||'')}</textarea>
-
-          <label style="margin-top:12px">4. Auto‑évaluation et méta‑cognition</label>
-          <div class="row" style="margin-top:8px">
-            <div class="col"><label>Ce que je maîtrise bien</label><textarea id="auto1">${escapeHtml(lesson.auto[0]||'')}</textarea></div>
-            <div class="col"><label>Ce que je dois améliorer</label><textarea id="auto2">${escapeHtml(lesson.auto[1]||'')}</textarea></div>
-            <div class="col"><label>Stratégie pour progresser</label><textarea id="auto3">${escapeHtml(lesson.auto[2]||'')}</textarea></div>
-          </div>
-
-          <div style="display:flex;gap:8px;margin-top:12px">
-            <button id="saveBtn" class="btn">💾 Sauvegarder leçon</button>
-            <button id="previewBtn" class="btn ghost">🔍 Aperçu imprimable</button>
+          <div>
+            <label class="field-label">Ce que je dois améliorer :</label>
+            <textarea class="field" data-field="ameliorer" placeholder="Ce que je dois améliorer..."></textarea>
           </div>
         </div>
-      `
+        <div style="margin-top:12px;">
+          <label class="field-label">Stratégie pour progresser :</label>
+          <textarea class="field" data-field="strategie" placeholder="Ma stratégie..."></textarea>
+        </div>
+      `;
+      contentArea.appendChild(cardMeta);
 
-      // bind actions
-      document.getElementById('saveBtn').addEventListener('click', ()=>{
-        lesson.title = document.getElementById('titleInput').value || lesson.title
-        lesson.journal = document.getElementById('journal').value
-        lesson.synthese = document.getElementById('synthese').value
-        lesson.application = document.getElementById('application').value
-        lesson.auto = [document.getElementById('auto1').value, document.getElementById('auto2').value, document.getElementById('auto3').value]
-        save(); renderLessons(); alert('Leçon sauvegardée')
-      })
+      // Bind values and events
+      // Title input binding
+      pageTitle.oninput = (e) => {
+        lesson.title = e.target.value;
+        lesson.updatedAt = Date.now();
+        scheduleSave();
+        renderSidebar(); // update list titles
+      };
 
-      document.getElementById('renameBtn').addEventListener('click', ()=>{
-        const newTitle = prompt('Nouveau titre', lesson.title);
-        if(newTitle){ lesson.title = newTitle; save(); renderLessons(); renderEditor() }
-      })
-
-      document.getElementById('deleteBtn').addEventListener('click', ()=>{
-        if(!confirm('Supprimer cette leçon ?')) return
-        data.lessons = data.lessons.filter(x=>x.id!==lesson.id)
-        activeLessonId = data.lessons.length ? data.lessons[0].id : null
-        save(); renderLessons(); renderEditor()
-      })
-
-      document.getElementById('previewBtn').addEventListener('click', ()=>{
-        const html = buildPrintable(lesson)
-        const w = window.open('', '_blank')
-        w.document.write(html); w.document.close()
-      })
+      // textareas
+      const areas = contentArea.querySelectorAll('textarea.field');
+      areas.forEach(area => {
+        const field = area.getAttribute('data-field');
+        area.value = lesson[field] || '';
+        area.oninput = (e) => {
+          lesson[field] = e.target.value;
+          lesson.updatedAt = Date.now();
+          scheduleSave();
+          // update subtitle
+          pageSubtitle.textContent = 'Dernière modification: ' + new Date(lesson.updatedAt).toLocaleString();
+        };
+      });
     }
 
-    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)) }
-    function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) }catch(e){return null} }
+    function renderBilan(){
+      contentArea.innerHTML = '';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;">
+          <div>
+            <label class="field-label">Ce que j’ai le plus appris dans ce cours</label>
+            <textarea class="field" data-field="appris" placeholder="Ce que j'ai appris..."></textarea>
+          </div>
+        </div>
 
-    function saveBilan(){
-      const b = {bilan1:bilanFields[0].value,bilan2:bilanFields[1].value,bilan3:bilanFields[2].value,bilan4:bilanFields[3].value}
-      localStorage.setItem(BILAN_KEY, JSON.stringify(b))
-      alert('Bilan sauvegardé')
-    }
-    function loadBilan(){ try{const b=JSON.parse(localStorage.getItem(BILAN_KEY)); if(b){bilanFields[0].value=b.bilan1||'';bilanFields[1].value=b.bilan2||'';bilanFields[2].value=b.bilan3||'';bilanFields[3].value=b.bilan4||''}}catch(e){}
-    }
-    function clearBilan(){ if(!confirm('Effacer le bilan final ?')) return; bilanFields.forEach(f=>f.value=''); localStorage.removeItem(BILAN_KEY) }
+        <div style="margin-top:12px;">
+          <label class="field-label">Les compétences que je peux réutiliser ailleurs</label>
+          <textarea class="field" data-field="competences" placeholder="Compétences réutilisables..."></textarea>
+        </div>
 
-    function buildPrintable(lesson){
-      return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(lesson.title)}</title><style>body{font-family:Arial;padding:24px;color:#0b1726}h1{color:#0b5cff}section{margin-bottom:18px}label{font-weight:700}</style></head><body><h1>${escapeHtml(lesson.title)}</h1><section><label>1. Journal d’apprentissage réflexif</label><div>${nl2br(lesson.journal)}</div></section><section><label>2. Synthèse personnelle</label><div>${nl2br(lesson.synthese)}</div></section><section><label>3. Application pratique</label><div>${nl2br(lesson.application)}</div></section><section><label>4. Auto-évaluation</label><div><strong>Ce que je maîtrise bien:</strong><div>${nl2br(lesson.auto[0])}</div><strong>Ce que je dois améliorer:</strong><div>${nl2br(lesson.auto[1])}</div><strong>Stratégie:</strong><div>${nl2br(lesson.auto[2])}</div></div></section></body></html>`
+        <div style="margin-top:12px;">
+          <label class="field-label">Mon plus grand défi</label>
+          <textarea class="field" data-field="defis" placeholder="Mon défi..."></textarea>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label class="field-label">Mes prochaines étapes d'apprentissage</label>
+          <textarea class="field" data-field="prochaines" placeholder="Prochaines étapes..."></textarea>
+        </div>
+      `;
+      contentArea.appendChild(card);
+
+      // Bind values/events
+      const fields = card.querySelectorAll('textarea.field');
+      fields.forEach(area => {
+        const f = area.getAttribute('data-field');
+        area.value = data.bilanFinal[f] || '';
+        area.oninput = (e) => {
+          data.bilanFinal[f] = e.target.value;
+          scheduleSave();
+        };
+      });
     }
 
-    function buildStandaloneHTML(){
-      const payload = JSON.stringify(data)
-      const bilan = JSON.stringify({b1:bilanFields[0].value,b2:bilanFields[1].value,b3:bilanFields[2].value,b4:bilanFields[3].value})
-      return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Portfolio Export</title><style>body{font-family:Arial;margin:24px;color:#0b1726}h1{color:#0b5cff}</style></head><body><h1>Portfolio Évolutif — Export</h1><script>const data = ${payload}; const bilan = ${bilan}; document.write('<p>Le portfolio contient '+data.lessons.length+' leçon(s).</p>'); data.lessons.forEach((l,i)=>{document.write('<section><h2>'+ (i+1) +'. '+escapeHtml(l.title) +'</h2>'); document.write('<p><strong>Journal:</strong><br/>'+nl2br(l.journal)+'</p>'); document.write('<p><strong>Synthèse:</strong><br/>'+nl2br(l.synthese)+'</p>'); document.write('<p><strong>Application:</strong><br/>'+nl2br(l.application)+'</p>'); document.write('<p><strong>Auto-éval:</strong><br/>'+nl2br(l.auto.join('<br/>'))+'</p></section>')}); function nl2br(s){if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/
-/g,'<br/>')} function escapeHtml(s){if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</script></body></html>`
+    /* Save scheduling (debounced) */
+    function scheduleSave(){
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        saveData();
+        saveTimer = null;
+      }, SAVE_DELAY);
     }
 
-    // ----- Helpers -----
-    function id(){ return 'l_' + Math.random().toString(36).slice(2,9) }
-    function escapeHtml(str){ if(!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-    function nl2br(s){ if(!s) return ''; return escapeHtml(s).replace(/
-/g,'<br/>') }
+    /* Buttons */
+    addLessonBtn.onclick = () => createLesson();
+    openBilanBtn.onclick = () => {
+      data.selected = 'bilan';
+      renderSidebar();
+      renderMain();
+    };
+
+    exportBtn.onclick = () => {
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'portfolio_ac_export.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    /* Ensure data saved on unload */
+    window.addEventListener('beforeunload', () => {
+      if (saveTimer) clearTimeout(saveTimer);
+      saveData();
+    });
+
+    /* Initialize */
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+    });
+
+    /* Expose functions for console usage */
+    window._portfolio_data = data;
+    window._storageKey = STORAGE_KEY;
 
   </script>
 </body>
