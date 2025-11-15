@@ -3,457 +3,605 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portfolio — Visiteur (Algorithmique & Complexité)</title>
+  <title>Portfolio — Visiteur (Pro Dashboard)</title>
+  <meta name="color-scheme" content="light dark">
   <style>
     :root{
-      --bg: #0f1724;           /* page background */
-      --panel: #0b1220;        /* dark panel */
-      --card: #0f1724;         /* card background (transparent) */
-      --surface: rgba(255,255,255,0.04);
-      --muted: #94a3b8;        /* muted text */
-      --text: #e6eef8;
-      --accent-1: #06b6d4;     /* cyan */
-      --accent-2: #60a5fa;     /* blue */
-      --glass: rgba(255,255,255,0.03);
-      --radius: 14px;
-      --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      --bg: #f7f9fb;
+      --panel: #ffffff;
+      --muted: #6b7280;
+      --text: #0f1724;
+      --card: #ffffff;
+      --border: #e6e9ef;
+      --accent: #2563eb;
+      --accent-2: #06b6d4;
+      --radius: 12px;
+      --shadow: 0 6px 20px rgba(17,24,39,0.06);
+      --glass: rgba(37, 99, 235, 0.04);
+      --glass-2: rgba(6, 182, 212, 0.04);
+      --focus: 3px solid rgba(37,99,235,0.12);
+      --max-width: 1200px;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    [data-theme="dark"]{
+      --bg: #0b1220;
+      --panel: #071126;
+      --muted: #9aa9bf;
+      --text: #e6eef8;
+      --card: #071126;
+      --border: rgba(255,255,255,0.04);
+      --accent: #60a5fa;
+      --accent-2: #06b6d4;
+      --shadow: 0 10px 30px rgba(2,6,23,0.6);
+      --glass: rgba(255,255,255,0.02);
+      --glass-2: rgba(255,255,255,0.02);
+      --focus: 3px solid rgba(96,165,250,0.08);
     }
 
-    * { box-sizing: border-box; }
-    html,body { height:100%; margin:0; background:linear-gradient(180deg,#071027 0%, #081427 50%, #07142b 100%); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);display:flex;justify-content:center;}
+    .container{width:100%;max-width:var(--max-width);padding:28px;box-sizing:border-box;}
+    .layout{display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start;}
+    @media (max-width:980px){ .layout{grid-template-columns:1fr;}}
+    
+    .sidebar{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);position:sticky;top:24px;align-self:start}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;box-shadow:0 6px 20px rgba(37,99,235,0.08)}
+    h1{margin:0;font-size:18px}
+    .subtitle{color:var(--muted);font-size:13px;margin-top:4px}
 
-    /* Layout */
-    .wrap {
-      display:flex;
-      gap:24px;
-      padding:28px;
-      min-height:100vh;
-      align-items:flex-start;
-    }
-    .sidebar {
-      width:320px;
-      max-width:32%;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow:var(--shadow);
-      position:sticky;
-      top:24px;
-      height:calc(100vh - 48px);
-      overflow:auto;
-    }
+    .controls{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+    .btn{border:1px solid var(--border);background:transparent;padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600;color:var(--text)}
+    .btn.ghost{background:transparent}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:0;box-shadow:0 10px 28px rgba(37,99,235,0.08)}
+    .small{font-size:13px;color:var(--muted)}
 
-    .brand {
-      display:flex; gap:12px; align-items:center; margin-bottom:12px;
-    }
-    .logo {
-      width:54px; height:54px; border-radius:12px;
-      background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
-      display:flex; align-items:center; justify-content:center; font-weight:800; color:white; font-size:18px;
-      box-shadow: 0 6px 20px rgba(59,130,246,0.18);
-    }
-    h1 { margin:0; font-size:18px; }
-    .subtitle { color:var(--muted); font-size:13px; margin-top:4px; }
+    .search{margin-top:12px;display:flex;gap:8px;padding:8px;border-radius:10px;background:var(--glass);border:1px solid var(--border);align-items:center}
+    .search input{border:0;background:transparent;outline:none;color:var(--text);width:100%;font-size:14px}
 
-    .controls { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-    .btn {
-      background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-      color:var(--text); border:1px solid rgba(255,255,255,0.03); padding:8px 10px; border-radius:10px; cursor:pointer; font-weight:600;
-    }
-    .btn.primary { background:linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#00101a; border:0; box-shadow:0 8px 20px rgba(6,182,212,0.12); }
-    .small { font-size:13px; color:var(--muted); }
+    .sidebar-list{margin-top:14px;display:flex;flex-direction:column;gap:8px;max-height:48vh;overflow:auto;padding-right:6px}
+    .sidebar-item{padding:10px;border-radius:8px;background:transparent;border:1px solid transparent;cursor:pointer;transition:all .14s}
+    .sidebar-item:hover{background:var(--glass);border-color:var(--border);transform:translateY(-2px)}
+    .meta{font-size:12px;color:var(--muted)}
 
-    .search {
-      margin-top:12px;
-      display:flex; gap:10px; align-items:center;
-      background:var(--glass);
-      padding:8px; border-radius:12px; border:1px solid rgba(255,255,255,0.02);
-    }
-    .search input {
-      background:transparent; border:0; outline:none; color:var(--text); font-size:14px; width:100%;
-    }
+    .main{display:flex;flex-direction:column;gap:18px}
+    .hero{display:flex;justify-content:space-between;align-items:center;padding:20px;border-radius:14px;background:linear-gradient(90deg, rgba(37,99,235,0.06), rgba(6,182,212,0.03));border:1px solid var(--border);box-shadow:var(--shadow)}
+    .hero h2{margin:0;font-size:20px}
+    .hero p{margin:6px 0 0 0;color:var(--muted);font-size:14px}
 
-    .list { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+    .toolbar{display:flex;gap:10px;align-items:center}
+    .pill{padding:8px 12px;border-radius:999px;background:transparent;border:1px solid var(--border);font-weight:700;color:var(--muted)}
 
-    .lesson-list-item {
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:10px; border-radius:10px; cursor:pointer;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.02);
-      transition:transform .14s ease, background .14s;
-    }
-    .lesson-list-item:hover { transform:translateY(-3px); background:linear-gradient(90deg, rgba(96,165,250,0.08), rgba(6,182,212,0.04)); }
-    .lesson-title { font-weight:700; color:var(--text); }
-    .lesson-meta { font-size:12px; color:var(--muted); }
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+    .card{background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);box-shadow:var(--shadow);transition:transform .16s ease,box-shadow .16s}
+    .card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(2,6,23,0.06)}
+    .card h3{margin:0;font-size:16px}
+    .excerpt{margin-top:8px;color:var(--muted);font-size:14px;min-height:48px;white-space:pre-wrap}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+    .chip{font-size:12px;padding:6px 8px;border-radius:999px;background:var(--glass);border:1px solid var(--border);color:var(--muted)}
 
-    .main {
-      flex:1; min-width:0; display:flex; flex-direction:column; gap:18px;
+    .pagination{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px}
+    .page-btn{padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer}
+
+    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.4);z-index:1200}
+    .modal{width:min(900px,95%);max-height:86vh;overflow:auto;background:var(--panel);border-radius:12px;padding:22px;border:1px solid var(--border);box-shadow:0 18px 48px rgba(2,6,23,0.12);animation:modalIn .28s ease both}
+    @keyframes modalIn{from{transform:translateY(8px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .modal h2{margin:0;font-size:18px}
+    .modal .section{margin-top:12px}
+    .modal .section h4{margin:0 0 6px 0;font-size:13px;color:var(--muted)}
+    .modal .section p{margin:0;color:var(--text);white-space:pre-wrap;line-height:1.5}
+
+    .bilan{padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border:1px solid var(--border)}
+
+    @media (max-width:680px){
+      .hero{flex-direction:column;align-items:flex-start;gap:12px}
+      .sidebar{position:relative;top:auto}
     }
 
-    .hero {
-      position:relative; border-radius:18px; padding:28px;
-      background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(96,165,250,0.08));
-      border:1px solid rgba(255,255,255,0.03);
-      display:flex; justify-content:space-between; align-items:center; gap:20px;
-      box-shadow: 0 12px 36px rgba(2,6,23,0.45);
-    }
-    .hero-left { max-width:68%; }
-    .hero h2 { margin:0; font-size:24px; line-height:1.05; color: white; }
-    .hero p { margin:8px 0 0 0; color:var(--muted); font-size:14px; }
-
-    .hero-actions { display:flex; gap:10px; align-items:center; }
-    .pill { padding:8px 12px; border-radius:999px; font-weight:700; font-size:14px; cursor:pointer; border:1px solid rgba(255,255,255,0.03) }
-    .pill.ghost { background:transparent; color:var(--text) }
-    .pill.cta { background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#00101a; box-shadow:0 8px 24px rgba(6,182,212,0.14); }
-
-    /* Grid of cards */
-    .cards {
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap:18px;
-    }
-
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:14px;
-      padding:18px;
-      box-shadow: 0 6px 22px rgba(2,6,23,0.45);
-      border:1px solid rgba(255,255,255,0.02);
-      transition:transform .16s ease, box-shadow .16s;
-    }
-    .card:hover { transform:translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.6); }
-
-    .card h3 { margin:0 0 8px 0; font-size:16px; color:var(--text); }
-    .excerpt { color:var(--muted); font-size:14px; min-height:48px; white-space:pre-wrap; }
-    .card-footer { margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
-    .chip { font-size:12px; padding:6px 8px; border-radius:999px; background:rgba(255,255,255,0.03); color:var(--muted); border:1px solid rgba(255,255,255,0.02); }
-
-    /* Modal */
-    .modal-backdrop {
-      position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1200;
-      background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.8));
-      padding:28px;
-    }
-    .modal {
-      background: linear-gradient(180deg, rgba(10,16,28,0.95), rgba(8,12,22,0.96));
-      color:var(--text); width:min(950px,100%); max-height:90vh; overflow:auto; border-radius:16px; padding:22px; border:1px solid rgba(255,255,255,0.03);
-    }
-    .modal h2 { margin:0 0 8px 0; color:white; }
-    .section { margin-top:12px; }
-    .section h4 { margin:0 0 6px 0; font-size:14px; color:var(--muted); }
-    .section p { margin:0; color:var(--text); line-height:1.5; white-space:pre-wrap; }
-
-    .modal-close { position:absolute; top:28px; right:28px; background:transparent; border:0; color:var(--text); font-size:20px; cursor:pointer; }
-
-    /* Bilan card */
-    .bilan-card { padding:18px; border-radius:14px; background:linear-gradient(90deg, rgba(6,182,212,0.06), rgba(96,165,250,0.03)); border:1px solid rgba(255,255,255,0.02); box-shadow:0 10px 30px rgba(2,6,23,0.4); }
-
-    /* Responsive */
-    @media (max-width:980px) {
-      .wrap { padding:16px; gap:12px; flex-direction:column; }
-      .sidebar { position:relative; width:100%; height:auto; max-width:none; order:2; }
-      .hero-left { max-width:100%; }
-      .cards { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-    }
-    @media (max-width:520px) {
-      .cards { grid-template-columns: 1fr; }
-      .hero { padding:18px; }
-    }
+    .hidden{display:none}
+    a.link{color:var(--accent);text-decoration:none;font-weight:600}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <aside class="sidebar" aria-label="Navigation">
-      <div class="brand">
-        <div class="logo">AC</div>
-        <div>
-          <h1>Portfolio — Visiteur</h1>
-          <div class="subtitle">Algorithmique & Complexité — lecture</div>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button id="reloadBtn" class="btn">Recharger</button>
-        <label class="btn" style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          Importer JSON
-          <input type="file" id="fileImport" accept=".json" style="display:none">
-        </label>
-      </div>
-
-      <div class="search" style="margin-top:12px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.9"><path d="M21 21l-4.35-4.35" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <input id="searchInput" placeholder="Rechercher leçons, concepts..." aria-label="Recherche" />
-      </div>
-
-      <div class="small" style="margin-top:12px">Sommaire</div>
-      <div id="sidebarList" class="list" role="navigation" aria-label="Liste des leçons"></div>
-
-      <div style="margin-top:16px" class="small">Les données sont lues depuis le stockage local. Utilisez "Importer JSON" pour afficher des données partagées.</div>
-    </aside>
-
-    <main class="main" id="main">
-      <div class="hero" role="banner">
-        <div class="hero-left">
-          <h2>Portfolio évolutif — Algorithmique & Complexité</h2>
-          <p>Explorez les leçons et la synthèse finale. Présentation optimisée pour la lecture — agréable et responsive.</p>
-        </div>
-        <div class="hero-actions">
-          <div id="countPill" class="pill ghost">0 leçons</div>
-          <button id="focusBilan" class="pill cta">Voir le Bilan</button>
-        </div>
-      </div>
-
-      <section aria-label="Leçons disponibles">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <h3 style="margin:0">Leçons</h3>
-          <div class="small" id="lastUpdated">—</div>
+  <div class="container" id="root">
+    <div class="layout" role="application" aria-label="Portfolio Visiteur">
+      <aside class="sidebar" aria-label="Navigation et actions">
+        <div class="brand">
+          <div class="logo">AC</div>
+          <div>
+            <h1>Portfolio — Visiteur</h1>
+            <div class="subtitle">Algorithmique & Complexité</div>
+          </div>
         </div>
 
-        <div id="cards" class="cards"></div>
-      </section>
-
-      <section aria-label="Bilan final">
-        <div class="bilan-card">
-          <h3 style="margin:0 0 8px 0">Bilan Final</h3>
-          <div id="bilanContent" class="small"></div>
+        <div class="controls" aria-hidden="false">
+          <button id="btnReload" class="btn" title="Recharger les données">Recharger</button>
+          <button id="btnExport" class="btn" title="Exporter les données">Exporter</button>
+          <label class="btn" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            Importer
+            <input id="fileImport" type="file" accept=".json" style="display:none">
+          </label>
+          <button id="btnEditor" class="btn primary" title="Ouvrir la partie éditeur">Aller à l'éditeur</button>
         </div>
-      </section>
-    </main>
+
+        <div class="search" role="search" aria-label="Rechercher">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input id="searchInput" placeholder="Rechercher leçons, concepts..." aria-label="Recherche"/>
+        </div>
+
+        <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+          <select id="filterSelect" class="btn" aria-label="Filtrer">
+            <option value="all">Toutes</option>
+            <option value="withContent">Avec contenu</option>
+            <option value="recent">Modifiées récemment</option>
+          </select>
+          <select id="sortSelect" class="btn" aria-label="Trier">
+            <option value="updatedDesc">Dernières modifiées</option>
+            <option value="updatedAsc">Anciennes</option>
+            <option value="titleAsc">Titre A→Z</option>
+          </select>
+        </div>
+
+        <div class="small" style="margin-top:14px">Sommaire</div>
+        <div id="sidebarList" class="sidebar-list" role="navigation" aria-label="Liste des leçons"></div>
+
+        <div style="margin-top:14px" class="small">Mode :</div>
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+          <button id="themeToggle" class="btn">Thème</button>
+          <div class="small" id="countPill">0 leçons</div>
+        </div>
+      </aside>
+
+      <main class="main" id="mainRegion">
+        <div class="hero" role="banner" aria-live="polite">
+          <div>
+            <h2>Portfolio évolutif — Algorithmique & Complexité</h2>
+            <p>Lecture publique des leçons et de la synthèse finale. Interface claire, imprimable et responsive.</p>
+          </div>
+          <div class="toolbar">
+            <div id="lastUpdated" class="pill">—</div>
+            <button id="focusBilan" class="btn primary">Voir le Bilan</button>
+          </div>
+        </div>
+
+        <section aria-labelledby="lessonsTitle">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <h3 id="lessonsTitle" style="margin:0">Leçons</h3>
+            <div class="small" id="resultsInfo">—</div>
+          </div>
+
+          <div id="cards" class="cards-grid" role="list"></div>
+
+          <div class="pagination" id="pagination" aria-label="Pagination"></div>
+        </section>
+
+        <section aria-labelledby="bilanTitle">
+          <h3 id="bilanTitle">Bilan Final</h3>
+          <div class="bilan card" id="bilanContent"></div>
+        </section>
+      </main>
+    </div>
   </div>
 
-  <!-- Modal -->
   <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal" id="modal">
-      <button class="modal-close" id="modalClose" aria-label="Fermer">✕</button>
-      <h2 id="modalTitle">Titre</h2>
-      <div id="modalBody">
-        <!-- sections inserted here -->
+    <div class="modal" role="document" aria-labelledby="modalTitle" tabindex="-1">
+      <div class="modal-header">
+        <h2 id="modalTitle">Titre</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="modalPrint" class="btn">Imprimer</button>
+          <button id="modalClose" class="btn">Fermer</button>
+        </div>
       </div>
+      <div id="modalBody"></div>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'ac_portfolio_v2';
-    let data = { lessons: [], bilan: {} };
-    const sidebarList = document.getElementById('sidebarList');
-    const cardsEl = document.getElementById('cards');
-    const bilanContent = document.getElementById('bilanContent');
-    const lastUpdated = document.getElementById('lastUpdated');
-    const countPill = document.getElementById('countPill');
-    const searchInput = document.getElementById('searchInput');
-    const modalBackdrop = document.getElementById('modalBackdrop');
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalBody = document.getElementById('modalBody');
+    (() => {
+      const STORAGE_KEY = 'ac_portfolio_v2';
+      const PAGE_SIZE = 6;
 
-    // Utility
-    function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\n/g,'<br>'); }
-    function excerpt(text, n = 180) {
-      if (!text) return '';
-      const t = text.replace(/\\s+/g,' ').trim();
-      return t.length > n ? t.slice(0,n).trim() + '…' : t;
-    }
-    function formatDate(ts){
-      if (!ts) return '';
-      const d = new Date(ts);
-      return d.toLocaleString();
-    }
-
-    // Load from localStorage
-    function loadFromLocal(){
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        data = { lessons: [], bilan: {} };
-        renderAll();
-        return;
-      }
-      try {
-        const parsed = JSON.parse(raw);
-        data = Object.assign({ lessons: [], bilan: {} }, parsed);
-        if (!Array.isArray(data.lessons)) data.lessons = [];
-      } catch(e){ console.error('Erreur parsing JSON localStorage', e); data = { lessons: [], bilan: {} }; }
-      renderAll();
-    }
-
-    // Render sidebar and cards
-    function renderAll(filter = '') {
-      // filter: search string
-      const q = (filter||'').trim().toLowerCase();
-      // sidebar
-      sidebarList.innerHTML = '';
-      data.lessons.forEach((l, idx) => {
-        const li = document.createElement('div');
-        li.className = 'lesson-list-item';
-        li.tabIndex = 0;
-        li.innerHTML = `<div>
-                          <div class="lesson-title">${escapeHtml(l.title || ('Leçon '+(idx+1)))}</div>
-                          <div class="lesson-meta">${l.updatedAt ? 'Modifié ' + formatDate(l.updatedAt) : ''}</div>
-                        </div>`;
-        li.addEventListener('click', () => openLessonModal(l));
-        sidebarList.appendChild(li);
-      });
-
-      // cards (grid)
-      cardsEl.innerHTML = '';
-      const filtered = (q ? data.lessons.filter(l => {
-        const blob = ((l.title||'') + ' ' + (l.journal||'') + ' ' + (l.synthese||'') + ' ' + (l.application||'') + ' ' + (l.maitrise||'') + ' ' + (l.ameliorer||'') + ' ' + (l.strategie||'')).toLowerCase();
-        return blob.indexOf(q) !== -1;
-      }) : data.lessons);
-
-      filtered.forEach((l, idx) => {
-        const c = document.createElement('article');
-        c.className = 'card';
-        const updated = l.updatedAt ? formatDate(l.updatedAt) : '';
-        const excerptText = excerpt(l.journal || l.synthese || l.application || '', 220);
-        c.innerHTML = `<h3>${escapeHtml(l.title || ('Leçon ' + (idx+1)))}</h3>
-                       <div class="excerpt">${escapeHtml(excerptText)}</div>
-                       <div class="card-footer">
-                         <div class="chip">${updated}</div>
-                         <div style="display:flex;gap:8px">
-                           <button class="btn" data-id="${l.id}">Lire</button>
-                         </div>
-                       </div>`;
-        const btn = c.querySelector('button[data-id]');
-        btn.addEventListener('click', () => openLessonModal(l));
-        cardsEl.appendChild(c);
-      });
-
-      // bilan
-      const b = data.bilan || {};
-      bilanContent.innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-          <div><strong class="small">Ce que j’ai le plus appris</strong><p class="small" style="color:var(--text);margin-top:6px">${escapeHtml(b.appris||'—')}</p></div>
-          <div><strong class="small">Compétences réutilisables</strong><p class="small" style="color:var(--text);margin-top:6px">${escapeHtml(b.competences||'—')}</p></div>
-          <div><strong class="small">Mon plus grand défi</strong><p class="small" style="color:var(--text);margin-top:6px">${escapeHtml(b.defis||'—')}</p></div>
-          <div><strong class="small">Prochaines étapes</strong><p class="small" style="color:var(--text);margin-top:6px">${escapeHtml(b.prochaines||'—')}</p></div>
-        </div>
-      `;
-
-      // meta
-      lastUpdated.textContent = data.lessons.length ? 'Dernière: ' + formatDate(Math.max(...data.lessons.map(x => x.updatedAt || 0))) : 'Aucune leçon';
-      countPill.textContent = `${data.lessons.length} leçon${data.lessons.length>1?'s':''}`;
-
-      // If no lessons
-      if (filtered.length === 0) {
-        cardsEl.innerHTML = `<div class="card" style="text-align:center;grid-column:1/-1"><div style="font-weight:700;color:var(--muted)">Aucune leçon trouvée</div><div class="small" style="margin-top:6px">Essayez une autre recherche ou importer un JSON.</div></div>`;
-      }
-    }
-
-    // Open modal to read a lesson
-    function openLessonModal(l){
-      modalBackdrop.style.display = 'flex';
-      modalBackdrop.setAttribute('aria-hidden','false');
-      modalTitle.innerHTML = escapeHtml(l.title || 'Leçon');
-      modalBody.innerHTML = `
-        <div class="section">
-          <h4>Journal d'apprentissage réflexif</h4>
-          <p>${escapeHtml(l.journal || '—')}</p>
-        </div>
-        <div class="section">
-          <h4>Synthèse personnelle des concepts clés</h4>
-          <p>${escapeHtml(l.synthese || '—')}</p>
-        </div>
-        <div class="section">
-          <h4>Application pratique</h4>
-          <p>${escapeHtml(l.application || '—')}</p>
-        </div>
-        <div class="section">
-          <h4>Ce que je maîtrise bien</h4>
-          <p>${escapeHtml(l.maitrise || '—')}</p>
-        </div>
-        <div class="section">
-          <h4>Ce que je dois améliorer</h4>
-          <p>${escapeHtml(l.ameliorer || '—')}</p>
-        </div>
-        <div class="section">
-          <h4>Stratégie pour progresser</h4>
-          <p>${escapeHtml(l.strategie || '—')}</p>
-        </div>
-      `;
-      // focus for accessibility
-      modal.focus();
-    }
-
-    function closeModal(){
-      modalBackdrop.style.display = 'none';
-      modalBackdrop.setAttribute('aria-hidden','true');
-      modalTitle.textContent = '';
-      modalBody.innerHTML = '';
-    }
-
-    // Import JSON (display & optionally save)
-    document.getElementById('fileImport').addEventListener('change', (e) => {
-      const f = e.target.files[0];
-      if (!f) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const parsed = JSON.parse(reader.result);
-          if (!parsed || !parsed.lessons) {
-            alert('Fichier JSON invalide. Structure attendue: { lessons: [...], bilan: {...} }');
-            return;
-          }
-          // Ask whether to write to localStorage
-          const write = confirm('Importer le JSON pour affichage. Voulez-vous aussi écrire ces données dans votre localStorage (écrasera les données locales) ?');
-          if (write) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-            loadFromLocal();
-            alert('Importé et enregistré localement.');
-          } else {
-            data = Object.assign({ lessons: [], bilan: {} }, parsed);
-            renderAll(searchInput.value);
-            alert('Importé pour affichage (localStorage non modifié).');
-          }
-        } catch(err) {
-          console.error(err);
-          alert('Impossible de lire le fichier JSON.');
-        } finally {
-          e.target.value = '';
-        }
+      let state = {
+        data: { lessons: [], bilan: {} },
+        q: '',
+        filter: 'all',
+        sort: 'updatedDesc',
+        page: 1,
+        pageSize: PAGE_SIZE,
+        theme: localStorage.getItem('ac_theme') || 'light'
       };
-      reader.readAsText(f);
-    });
 
-    // Buttons
-    document.getElementById('reloadBtn').addEventListener('click', loadFromLocal);
-    document.getElementById('goEditor').addEventListener('click', () => {
-      // open editor.html in a new tab if available
-      const editorUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'editor.html';
-      // If hosted on GitHub Pages and path ends with a file, ensure correct.
-      window.open(editorUrl, '_blank');
-    });
-    document.getElementById('focusBilan').addEventListener('click', () => {
-      document.querySelector('[aria-label="Bilan final"]')?.scrollIntoView({behavior:'smooth'});
-    });
+      const root = document.getElementById('root');
+      const sidebarList = document.getElementById('sidebarList');
+      const cardsEl = document.getElementById('cards');
+      const bilanContent = document.getElementById('bilanContent');
+      const countPill = document.getElementById('countPill');
+      const searchInput = document.getElementById('searchInput');
+      const filterSelect = document.getElementById('filterSelect');
+      const sortSelect = document.getElementById('sortSelect');
+      const paginationEl = document.getElementById('pagination');
+      const resultsInfo = document.getElementById('resultsInfo');
+      const lastUpdated = document.getElementById('lastUpdated');
+      const modalBackdrop = document.getElementById('modalBackdrop');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
+      const modalClose = document.getElementById('modalClose');
+      const modalPrint = document.getElementById('modalPrint');
+      const btnReload = document.getElementById('btnReload');
+      const btnExport = document.getElementById('btnExport');
+      const fileImport = document.getElementById('fileImport');
+      const themeToggle = document.getElementById('themeToggle');
+      const focusBilan = document.getElementById('focusBilan');
+      const btnEditor = document.getElementById('btnEditor');
 
-    // Search
-    searchInput.addEventListener('input', (e) => {
-      renderAll(e.target.value);
-    });
+      const esc = s => (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const excerpt = (t, n=220) => { if(!t) return ''; const s = t.replace(/\s+/g,' ').trim(); return s.length>n? s.slice(0,n).trim() + '…' : s; };
+      const fmtDate = ts => ts ? new Date(ts).toLocaleString() : '';
+      const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
 
-    // Modal events
-    document.getElementById('modalClose').addEventListener('click', closeModal);
-    modalBackdrop.addEventListener('click', (ev) => {
-      if (ev.target === modalBackdrop) closeModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
+      function clearChildren(el){ while(el.firstChild) el.removeChild(el.firstChild); }
 
-    // Sync across tabs
-    window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY) loadFromLocal();
-    });
+      function loadLocal(){
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          state.data = { lessons: [], bilan: {} };
+          saveSampleIfEmpty();
+        } else {
+          try {
+            const parsed = JSON.parse(raw);
+            state.data = Object.assign({ lessons: [], bilan: {} }, parsed);
+            if (!Array.isArray(state.data.lessons)) state.data.lessons = [];
+          } catch(e){
+            console.error('parse error', e);
+            state.data = { lessons: [], bilan: {} };
+          }
+        }
+        applyThemeToDocument();
+        renderAll();
+      }
 
-    // Initial load
-    document.addEventListener('DOMContentLoaded', () => {
-      loadFromLocal();
-    });
+      function saveSampleIfEmpty(){
+        if (state.data.lessons.length === 0) {
+          const id = 'l_' + Date.now().toString(36);
+          state.data.lessons = [{
+            id, title: 'Leçon 1 — Introduction',
+            journal: 'Introduction à l\'algorithmique et aux preuves. Concept de terminaison et invariants de boucle.',
+            synthese: 'Notions de complexité, Big-O, classes P/NP.',
+            application: 'Analyser la complexité d\'algorithmes standards.',
+            maitrise: 'Terminologie et notation Big-O.',
+            ameliorer: 'Preuve par invariants sur des exemples complexes.',
+            strategie: 'S\'exercer sur exercices et comparaisons empiriques.',
+            updatedAt: Date.now()
+          }];
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+        }
+      }
 
-    // Expose for debugging
-    window._visitor_data = data;
-    window._STORAGE_KEY = STORAGE_KEY;
+      function getFilteredSorted(){
+        const q = state.q.trim().toLowerCase();
+        let list = state.data.lessons.slice();
+
+        if (state.filter === 'withContent') {
+          list = list.filter(l => (l.journal||'') || (l.synthese||'') || (l.application||''));
+        } else if (state.filter === 'recent') {
+          const cutoff = Date.now() - 1000*60*60*24*30; // 30 days
+          list = list.filter(l => (l.updatedAt || 0) >= cutoff);
+        }
+
+        if (q) {
+          list = list.filter(l => {
+            const hay = ((l.title||'') + ' ' + (l.journal||'') + ' ' + (l.synthese||'') + ' ' + (l.application||'') + ' ' + (l.maitrise||'') + ' ' + (l.ameliorer||'') + ' ' + (l.strategie||'')).toLowerCase();
+            return hay.indexOf(q) !== -1;
+          });
+        }
+
+        if (state.sort === 'updatedDesc') list.sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+        else if (state.sort === 'updatedAsc') list.sort((a,b) => (a.updatedAt||0) - (b.updatedAt||0));
+        else if (state.sort === 'titleAsc') list.sort((a,b) => (''+(a.title||'')).localeCompare(''+(b.title||'')));
+
+        return list;
+      }
+
+      function renderAll(){
+        renderSidebar();
+        renderCards();
+        renderBilan();
+        renderMeta();
+      }
+
+      function renderSidebar(){
+        clearChildren(sidebarList);
+        const frag = document.createDocumentFragment();
+        const list = state.data.lessons;
+        list.forEach((l, idx) => {
+          const d = document.createElement('div');
+          d.className = 'sidebar-item';
+          d.tabIndex = 0;
+          d.setAttribute('data-id', l.id || ('i'+idx));
+          d.innerHTML = `<div style="font-weight:700">${esc(l.title||('Leçon '+(idx+1)))}</div><div class="meta">${l.updatedAt? 'Modifié ' + fmtDate(l.updatedAt): ''}</div>`;
+          d.addEventListener('click', onSidebarClick);
+          frag.appendChild(d);
+        });
+        sidebarList.appendChild(frag);
+        countPill.textContent = `${state.data.lessons.length} leçon${state.data.lessons.length>1?'s':''}`;
+      }
+
+      function renderCards(){
+        clearChildren(cardsEl);
+        const list = getFilteredSorted();
+        const total = list.length;
+        const pages = Math.max(1, Math.ceil(total / state.pageSize));
+        state.page = clamp(state.page, 1, pages);
+
+        const start = (state.page - 1) * state.pageSize;
+        const pageItems = list.slice(start, start + state.pageSize);
+
+        const frag = document.createDocumentFragment();
+        pageItems.forEach((l, i) => {
+          const card = document.createElement('article');
+          card.className = 'card';
+          card.setAttribute('role','listitem');
+          card.dataset.id = l.id;
+          const updated = l.updatedAt ? fmtDate(l.updatedAt) : '';
+          const preview = excerpt(l.journal || l.synthese || l.application || '', 280);
+          card.innerHTML = `
+            <h3>${esc(l.title || ('Leçon ' + (start + i + 1)))}</h3>
+            <div class="excerpt">${esc(preview)}</div>
+            <div class="card-footer">
+              <div class="chip">${updated}</div>
+              <div style="display:flex;gap:8px">
+                <button class="btn" data-action="open" data-id="${l.id}">Lire</button>
+                <button class="btn" data-action="print" data-id="${l.id}">Imprimer</button>
+              </div>
+            </div>
+          `;
+          frag.appendChild(card);
+        });
+
+        if (pageItems.length === 0) {
+          const empty = document.createElement('div');
+          empty.className = 'card';
+          empty.innerHTML = `<div style="font-weight:700;color:var(--muted)">Aucune leçon</div><div class="small" style="margin-top:6px">Essayez une autre recherche ou importer un JSON.</div>`;
+          frag.appendChild(empty);
+        }
+
+        cardsEl.appendChild(frag);
+        renderPagination(total);
+        resultsInfo.textContent = `${total} résultat${total>1?'s':''}`;
+      }
+
+      function renderPagination(totalItems){
+        clearChildren(paginationEl);
+        const totalPages = Math.max(1, Math.ceil(totalItems / state.pageSize));
+        const frag = document.createDocumentFragment();
+
+        const mkBtn = (label, disabled, pageNum) => {
+          const b = document.createElement('button');
+          b.className = 'page-btn btn';
+          b.textContent = label;
+          b.disabled = disabled;
+          if (!disabled) b.addEventListener('click', ()=> { state.page = pageNum; renderCards(); });
+          return b;
+        };
+
+        frag.appendChild(mkBtn('«', state.page === 1, 1));
+        const range = 2;
+        const start = Math.max(1, state.page - range);
+        const end = Math.min(totalPages, state.page + range);
+        if (start > 1) frag.appendChild(document.createTextNode('...'));
+        for (let p=start; p<=end; p++){
+          const btn = mkBtn(p, false, p);
+          if (p === state.page) { btn.style.fontWeight = '700'; btn.style.borderColor = 'var(--accent)'; }
+          frag.appendChild(btn);
+        }
+        if (end < totalPages) frag.appendChild(document.createTextNode('...'));
+        frag.appendChild(mkBtn('»', state.page === totalPages, totalPages));
+
+        paginationEl.appendChild(frag);
+      }
+
+      function renderBilan(){
+        const b = state.data.bilan || {};
+        bilanContent.innerHTML = `
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+            <div><strong class="small">Ce que j’ai le plus appris</strong><p class="small" style="color:var(--text);margin-top:6px">${esc(b.appris||'—')}</p></div>
+            <div><strong class="small">Compétences réutilisables</strong><p class="small" style="color:var(--text);margin-top:6px">${esc(b.competences||'—')}</p></div>
+            <div><strong class="small">Mon plus grand défi</strong><p class="small" style="color:var(--text);margin-top:6px">${esc(b.defis||'—')}</p></div>
+            <div><strong class="small">Mes prochaines étapes</strong><p class="small" style="color:var(--text);margin-top:6px">${esc(b.prochaines||'—')}</p></div>
+          </div>
+        `;
+      }
+
+      function renderMeta(){
+        const last = state.data.lessons.length ? fmtDate(Math.max(...state.data.lessons.map(l => l.updatedAt || 0))) : 'Aucune leçon';
+        lastUpdated.textContent = `Dernière: ${last}`;
+        document.getElementById('countPill').textContent = `${state.data.lessons.length} leçon${state.data.lessons.length>1?'s':''}`;
+      }
+
+      function onSidebarClick(e){
+        const id = e.currentTarget.dataset.id;
+        const lesson = state.data.lessons.find(x => x.id === id);
+        if (lesson) openModal(lesson);
+      }
+
+      cardsEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+        const lesson = state.data.lessons.find(x => x.id === id);
+        if (!lesson) return;
+        if (action === 'open') openModal(lesson);
+        else if (action === 'print') printLesson(lesson);
+      });
+
+      function openModal(lesson){
+        modalTitle.textContent = lesson.title || 'Leçon';
+        modalBody.innerHTML = `
+          <div class="section"><h4>Journal d'apprentissage réflexif</h4><p>${esc(lesson.journal||'—')}</p></div>
+          <div class="section"><h4>Synthèse personnelle des concepts clés</h4><p>${esc(lesson.synthese||'—')}</p></div>
+          <div class="section"><h4>Application pratique</h4><p>${esc(lesson.application||'—')}</p></div>
+          <div class="section"><h4>Ce que je maîtrise bien</h4><p>${esc(lesson.maitrise||'—')}</p></div>
+          <div class="section"><h4>Ce que je dois améliorer</h4><p>${esc(lesson.ameliorer||'—')}</p></div>
+          <div class="section"><h4>Stratégie pour progresser</h4><p>${esc(lesson.strategie||'—')}</p></div>
+        `;
+        modalBackdrop.style.display = 'flex';
+        modalBackdrop.setAttribute('aria-hidden', 'false');
+        // focus for accessibility
+        modalBackdrop.querySelector('.modal').focus();
+      }
+
+      function closeModal(){
+        modalBackdrop.style.display = 'none';
+        modalBackdrop.setAttribute('aria-hidden','true');
+        modalTitle.textContent = '';
+        modalBody.innerHTML = '';
+      }
+
+      modalClose.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', (ev) => {
+        if (ev.target === modalBackdrop) closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+
+      function printLesson(lesson){
+        const html = makePrintableHtml({ lessons: [lesson], bilan: state.data.bilan }, { title: lesson.title });
+        const w = window.open('', '_blank');
+        w.document.write(html);
+        w.document.close();
+      }
+
+      function makePrintableHtml(payload, opts = {}){
+        const title = (opts.title || 'Portfolio') .replace(/</g,'&lt;');
+        const css = `
+          body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:24px}
+          .card{border:1px solid #eee;padding:18px;border-radius:8px;margin-bottom:12px}
+          h1{font-size:20px}
+        `;
+        let body = `<h1>${title}</h1>`;
+        payload.lessons.forEach(l => {
+          body += `<div class="card"><h2>${esc(l.title)}</h2>`;
+          body += `<strong>Journal</strong><p>${esc(l.journal)}</p>`;
+          body += `<strong>Synthèse</strong><p>${esc(l.synthese)}</p>`;
+          body += `<strong>Application</strong><p>${esc(l.application)}</p>`;
+          body += `<strong>Maitrise</strong><p>${esc(l.maitrise)}</p>`;
+          body += `<strong>Améliorer</strong><p>${esc(l.ameliorer)}</p>`;
+          body += `<strong>Stratégie</strong><p>${esc(l.strategie)}</p>`;
+          body += `</div>`;
+        });
+        body += `<div class="card"><h2>Bilan Final</h2>`;
+        const b = payload.bilan || {};
+        body += `<p><strong>Ce que j’ai appris</strong><br>${esc(b.appris||'—')}</p>`;
+        body += `<p><strong>Compétences</strong><br>${esc(b.competences||'—')}</p>`;
+        body += `<p><strong>Défi</strong><br>${esc(b.defis||'—')}</p>`;
+        body += `<p><strong>Étapes</strong><br>${esc(b.prochaines||'—')}</p>`;
+        body += `</div>`;
+        return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title><style>${css}</style></head><body>${body}</body></html>`;
+      }
+
+      modalPrint.addEventListener('click', () => {
+        const title = modalTitle.textContent || 'Leçon';
+        const sections = modalBody.querySelectorAll('.section');
+        const lesson = { title, journal:'', synthese:'', application:'' };
+        if (sections[0]) lesson.journal = sections[0].querySelector('p')?.textContent || '';
+        if (sections[1]) lesson.synthese = sections[1].querySelector('p')?.textContent || '';
+        if (sections[2]) lesson.application = sections[2].querySelector('p')?.textContent || '';
+        const html = makePrintableHtml({ lessons: [lesson], bilan: state.data.bilan }, { title });
+        const w = window.open('', '_blank');
+        w.document.write(html);
+        w.document.close();
+      });
+
+      searchInput.addEventListener('input', debounce((e) => {
+        state.q = e.target.value || '';
+        state.page = 1;
+        renderCards();
+      }, 220));
+
+      filterSelect.addEventListener('change', (e) => {
+        state.filter = e.target.value;
+        state.page = 1;
+        renderCards();
+      });
+
+      sortSelect.addEventListener('change', (e) => {
+        state.sort = e.target.value;
+        state.page = 1;
+        renderCards();
+      });
+
+      btnReload.addEventListener('click', () => { loadLocal(); alert('Données rechargées'); });
+      btnExport.addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(state.data, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'portfolio_ac_export.json'; a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      fileImport.addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          try {
+            const parsed = JSON.parse(r.result);
+            if (!parsed || !('lessons' in parsed)) { alert('Structure invalide. Attendu: { lessons: [...], bilan: {...} }'); return; }
+            const write = confirm('Écrire ces données dans le stockage local ? (écrasera les données locales)');
+            if (write) {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+              loadLocal();
+              alert('Importé et sauvegardé.');
+            } else {
+              state.data = Object.assign({ lessons: [], bilan: {} }, parsed);
+              state.page = 1;
+              renderAll();
+              alert('Fichier chargé pour affichage (local non modifié).');
+            }
+          } catch(err) { console.error(err); alert('Impossible de lire le JSON'); }
+          e.target.value = '';
+        };
+        r.readAsText(f);
+      });
+
+      function applyThemeToDocument(){
+        document.documentElement.setAttribute('data-theme', state.theme === 'dark' ? 'dark' : 'light');
+        localStorage.setItem('ac_theme', state.theme);
+        themeToggle.textContent = state.theme === 'dark' ? 'Sombre' : 'Clair';
+      }
+      themeToggle.addEventListener('click', () => {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        applyThemeToDocument();
+      });
+
+      focusBilan.addEventListener('click', () => {
+        document.getElementById('bilanContent').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      btnEditor.addEventListener('click', () => {
+        const base = location.origin + location.pathname.replace(/[^/]*$/, '');
+        const editorUrl = base + 'editor.html';
+        window.open(editorUrl, '_blank');
+      });
+
+      function debounce(fn, wait) {
+        let t;
+        return function(...a){ clearTimeout(t); t = setTimeout(()=> fn.apply(this, a), wait); };
+      }
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_KEY) loadLocal();
+      });
+
+      function init(){
+        applyThemeToDocument();
+        loadLocal();
+      }
+
+      init();
+    })();
   </script>
 </body>
 </html>
