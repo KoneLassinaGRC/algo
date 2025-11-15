@@ -88,6 +88,10 @@
           </div>
           <div class="tools">
             <button id="btnPrintLesson" class="ghost">Aperçu imprimable</button>
+
+         
+            <button id="btnPublish" style="background:var(--accent);color:white;">Enregistrer & Publier</button>
+
             <button id="btnDelete" class="ghost" style="color:var(--danger);border-color:rgba(225,29,72,0.08);display:none">Supprimer</button>
           </div>
         </div>
@@ -116,18 +120,14 @@
   </div>
 
   <script>
-    // Key & data model
     const STORAGE_KEY = 'ac_portfolio_v2';
     document.getElementById('storageKey').textContent = STORAGE_KEY;
 
-    // In-memory
     let store = { lessons: [], bilan: { appris:'', competences:'', defis:'', prochaines:'' } , selected: null };
     let saveTimer = null, SAVE_DELAY = 400;
 
-    // Utility
     function uid(){ return 'l_' + Date.now().toString(36) + '_' + Math.floor(Math.random()*9000+1000).toString(36); }
 
-    /* Required functions (exposed) */
     function saveLesson(id){
       const l = store.lessons.find(x => x.id === id);
       if (!l) return;
@@ -175,20 +175,23 @@
     window.loadBilan = loadBilan;
 
     function switchMode(mode){
-      // For convenience: redirect to visitor page when requested
       if (mode === 'visitor') window.location.href = './index.html';
       else alert('switchMode: seul "visitor" est géré (redirection vers index.html)');
     }
     window.switchMode = switchMode;
 
-    // Internal save/load
     function scheduleSave(){
       if (saveTimer) clearTimeout(saveTimer);
       saveTimer = setTimeout(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); saveTimer = null; }, SAVE_DELAY);
       renderSubtitleSaved();
     }
 
-    function saveNow(){ if (saveTimer) clearTimeout(saveTimer); localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); saveTimer = null; renderSubtitleSaved(); }
+    function saveNow(){
+      if (saveTimer) clearTimeout(saveTimer);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      saveTimer = null;
+      renderSubtitleSaved();
+    }
     window.saveNow = saveNow;
 
     function loadData(){
@@ -199,11 +202,9 @@
           store = Object.assign({ lessons: [], bilan:{}, selected: null }, parsed);
           if (!Array.isArray(store.lessons)) store.lessons = [];
         } catch(e){
-          console.error('parse error',e);
           store = { lessons: [], bilan:{}, selected: null };
         }
       } else {
-        // initialize with a sample lesson
         const id = uid();
         store.lessons = [{
           id, title: 'Leçon 1 — Introduction',
@@ -217,7 +218,6 @@
       loadBilan();
     }
 
-    // Rendering
     const listEl = document.getElementById('list');
     const titleInput = document.getElementById('titleInput');
     const subtitle = document.getElementById('subtitle');
@@ -243,8 +243,9 @@
         div.appendChild(left); div.appendChild(right);
         listEl.appendChild(div);
       });
-      // Bilan link
-      const bilan = document.createElement('div'); bilan.className='lesson-item' + (store.selected === 'bilan' ? ' active' : '');
+
+      const bilan = document.createElement('div'); 
+      bilan.className='lesson-item' + (store.selected === 'bilan' ? ' active' : '');
       bilan.style.marginTop='8px'; bilan.tabIndex=0;
       bilan.innerHTML = '<div><div class="lesson-title">Bilan Final</div><div class="meta">Synthèse finale</div></div>';
       bilan.onclick = () => { store.selected = 'bilan'; renderMain(); };
@@ -252,7 +253,6 @@
     }
 
     function renderMain(){
-      // If selected is bilan, show bilan focus
       if (store.selected === 'bilan'){
         titleInput.value = 'Bilan Final';
         titleInput.readOnly = true;
@@ -278,24 +278,32 @@
       btnDelete.style.display = 'inline-block';
       btnDelete.onclick = () => deleteLesson(l.id);
 
-      // content form
       content.innerHTML = '';
-      // Journal
-      const c1 = document.createElement('div'); c1.className='card';
-      c1.innerHTML = '<label class="field-label">Journal d\\'apprentissage réflexif</label><div class="small" style="margin-bottom:8px;color:var(--muted-text)">Écrivez 5–10 lignes sur ce que vous avez appris, vos succès, difficultés et ressentis.</div><textarea class="field" data-field="journal" placeholder="Mon journal..."></textarea>';
-      // Synthèse
-      const c2 = document.createElement('div'); c2.className='card';
-      c2.innerHTML = '<label class="field-label">Synthèse personnelle des concepts clés</label><div class="small" style="margin-bottom:8px;color:var(--muted-text)">Résumez les principaux concepts.</div><textarea class="field" data-field="synthese" placeholder="Synthèse..."></textarea>';
-      // Application
-      const c3 = document.createElement('div'); c3.className='card';
-      c3.innerHTML = '<label class="field-label">Application pratique dans mon contexte</label><div class="small" style="margin-bottom:8px;color:var(--muted-text)">Comment appliquer ces concepts dans vos études, travail ou projets?</div><textarea class="field" data-field="application" placeholder="Application..."></textarea>';
-      // Auto-éval
-      const c4 = document.createElement('div'); c4.className='card';
-      c4.innerHTML = '<label class="field-label">Auto-évaluation et méta-cognition</label><div class="grid-2" style="margin-top:8px;"><div><label class="field-label">Ce que je maîtrise bien :</label><textarea class="field" data-field="maitrise" placeholder="Ce que je maîtrise..."></textarea></div><div><label class="field-label">Ce que je dois améliorer :</label><textarea class="field" data-field="ameliorer" placeholder="Ce que je dois améliorer..."></textarea></div></div><div style="margin-top:12px;"><label class="field-label">Stratégie pour progresser :</label><textarea class="field" data-field="strategie" placeholder="Ma stratégie..."></textarea></div>';
-      content.appendChild(c1); content.appendChild(c2); content.appendChild(c3); content.appendChild(c4);
 
-      // Populate fields and bind events
-      titleInput.oninput = () => { l.title = titleInput.value; l.updatedAt = Date.now(); scheduleSave(); renderList(); };
+      const c1 = document.createElement('div'); c1.className='card';
+      c1.innerHTML = '<label class="field-label">Journal d\'apprentissage réflexif</label><div class="small" style="margin-bottom:8px;color:var(--muted-text)">Écrivez 5–10 lignes.</div><textarea class="field" data-field="journal"></textarea>';
+
+      const c2 = document.createElement('div'); c2.className='card';
+      c2.innerHTML = '<label class="field-label">Synthèse personnelle des concepts clés</label><textarea class="field" data-field="synthese"></textarea>';
+
+      const c3 = document.createElement('div'); c3.className='card';
+      c3.innerHTML = '<label class="field-label">Application pratique</label><textarea class="field" data-field="application"></textarea>';
+
+      const c4 = document.createElement('div'); c4.className='card';
+      c4.innerHTML = '<label class="field-label">Auto-évaluation</label><div class="grid-2" style="margin-top:8px;"><div><label class="field-label">Ce que je maîtrise :</label><textarea class="field" data-field="maitrise"></textarea></div><div><label class="field-label">À améliorer :</label><textarea class="field" data-field="ameliorer"></textarea></div></div><div style="margin-top:12px;"><label class="field-label">Stratégie :</label><textarea class="field" data-field="strategie"></textarea></div>';
+
+      content.appendChild(c1); 
+      content.appendChild(c2); 
+      content.appendChild(c3); 
+      content.appendChild(c4);
+
+      titleInput.oninput = () => { 
+        l.title = titleInput.value; 
+        l.updatedAt = Date.now(); 
+        scheduleSave(); 
+        renderList(); 
+      };
+
       const areas = content.querySelectorAll('textarea.field');
       areas.forEach(a => {
         const f = a.getAttribute('data-field');
@@ -310,7 +318,6 @@
       });
     }
 
-    // Small subtitle saved indicator
     let savedHintTimer = null;
     function renderSubtitleSaved(){
       subtitle.textContent = 'Modifications en attente...';
@@ -320,7 +327,6 @@
       }, SAVE_DELAY + 120);
     }
 
-    // Actions
     document.getElementById('btnAdd').onclick = () => {
       const id = uid();
       const count = store.lessons.length + 1;
@@ -348,14 +354,14 @@
       r.onload = () => {
         try {
           const parsed = JSON.parse(r.result);
-          if (!confirm('Importer les données JSON va remplacer les données locales. Continuer ?')) return;
+          if (!confirm('Importer va remplacer les données locales. Continuer ?')) return;
           store = Object.assign({lessons:[],bilan:{},selected:null}, parsed);
           if (!Array.isArray(store.lessons)) store.lessons = [];
           scheduleSave();
           renderList();
           renderMain();
           loadBilan();
-        } catch (err){ alert('Fichier JSON invalide'); console.error(err); }
+        } catch (err){ alert('Fichier JSON invalide'); }
       };
       r.readAsText(f);
       e.target.value = '';
@@ -364,13 +370,11 @@
     document.getElementById('btnExportHtml').onclick = () => {
       const sel = store.selected;
       if (!sel || sel === 'bilan'){
-        // export whole portfolio printable
         const win = window.open('', '_blank');
         win.document.write(makePrintableHtml(store));
         win.document.close();
       } else {
         const l = store.lessons.find(x=>x.id===sel);
-        if (!l) { alert('Aucune leçon sélectionnée'); return; }
         const win = window.open('', '_blank');
         win.document.write(makePrintableHtml({ lessons:[l], bilan: store.bilan }));
         win.document.close();
@@ -379,16 +383,15 @@
 
     document.getElementById('btnPrintLesson').onclick = () => {
       const sel = store.selected;
-      if (!sel || sel === 'bilan'){ alert('Sélectionnez une leçon à prévisualiser'); return; }
+      if (!sel || sel === 'bilan'){ alert('Sélectionnez une leçon'); return; }
       const l = store.lessons.find(x=>x.id===sel);
-      if (!l) return;
       const win = window.open('', '_blank');
-      win.document.write(makePrintableHtml({ lessons:[l], bilan: store.bilan }, { title: l.title || 'Leçon' }));
+      win.document.write(makePrintableHtml({ lessons:[l], bilan: store.bilan }, { title: l.title }));
       win.document.close();
     };
 
     document.getElementById('btnClear').onclick = () => {
-      if (!confirm('Effacer toutes les données locales ?')) return;
+      if (!confirm('Effacer toutes les données ?')) return;
       store = { lessons: [], bilan:{}, selected:null };
       localStorage.removeItem(STORAGE_KEY);
       renderList();
@@ -396,70 +399,48 @@
       loadBilan();
     };
 
-    // Printable HTML generator
+   
+    document.getElementById('btnPublish').onclick = () => {
+      saveNow();
+      alert("Votre leçon a été publiée !");
+      window.location.href = './index.html';
+    };
+
     function makePrintableHtml(payload, options = {}) {
       const css = `
-        body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:28px}
+        body{font-family:Arial;color:#111;margin:28px}
         .card{border:1px solid #e6eefc;padding:18px;border-radius:8px;margin-bottom:14px}
         h1{font-size:20px;margin-bottom:8px}
         h2{font-size:16px;margin:0 0 8px 0}
         p{margin:6px 0;white-space:pre-wrap}
       `;
-      const title = options.title || 'Portfolio — Algorithmique & Complexité (Imprimable)';
+      const title = options.title || 'Portfolio — Algorithmique & Complexité';
       let body = `<h1>${escapeHtml(title)}</h1>`;
       payload.lessons.forEach((l, i) => {
-        body += `<div class="card"><h2>${escapeHtml(l.title || ('Leçon ' + (i+1)))}</h2>`;
-        body += `<strong>Journal d'apprentissage réflexif</strong><p>${escapeHtml(l.journal||'')}</p>`;
-        body += `<strong>Synthèse personnelle</strong><p>${escapeHtml(l.synthese||'')}</p>`;
-        body += `<strong>Application pratique</strong><p>${escapeHtml(l.application||'')}</p>`;
-        body += `<strong>Ce que je maîtrise bien</strong><p>${escapeHtml(l.maitrise||'')}</p>`;
-        body += `<strong>Ce que je dois améliorer</strong><p>${escapeHtml(l.ameliorer||'')}</p>`;
-        body += `<strong>Stratégie pour progresser</strong><p>${escapeHtml(l.strategie||'')}</p>`;
+        body += `<div class="card"><h2>${escapeHtml(l.title)}</h2>`;
+        body += `<strong>Journal</strong><p>${escapeHtml(l.journal)}</p>`;
+        body += `<strong>Synthèse</strong><p>${escapeHtml(l.synthese)}</p>`;
+        body += `<strong>Application</strong><p>${escapeHtml(l.application)}</p>`;
+        body += `<strong>Maitrise</strong><p>${escapeHtml(l.maitrise)}</p>`;
+        body += `<strong>Améliorer</strong><p>${escapeHtml(l.ameliorer)}</p>`;
+        body += `<strong>Stratégie</strong><p>${escapeHtml(l.strategie)}</p>`;
         body += `</div>`;
       });
-      // Bilan
       const b = payload.bilan || {};
       body += `<div class="card"><h2>Bilan Final</h2>`;
-      body += `<strong>Ce que j’ai le plus appris</strong><p>${escapeHtml(b.appris||'')}</p>`;
-      body += `<strong>Compétences réutilisables</strong><p>${escapeHtml(b.competences||'')}</p>`;
-      body += `<strong>Mon plus grand défi</strong><p>${escapeHtml(b.defis||'')}</p>`;
-      body += `<strong>Mes prochaines étapes</strong><p>${escapeHtml(b.prochaines||'')}</p>`;
+      body += `<strong>Ce que j’ai appris</strong><p>${escapeHtml(b.appris)}</p>`;
+      body += `<strong>Compétences</strong><p>${escapeHtml(b.competences)}</p>`;
+      body += `<strong>Défi</strong><p>${escapeHtml(b.defis)}</p>`;
+      body += `<strong>Étapes</strong><p>${escapeHtml(b.prochaines)}</p>`;
       body += `</div>`;
-
-      return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>${css}</style></head><body>${body}</body></html>`;
+      return `<!doctype html><html><head><meta charset="utf-8"><style>${css}</style></head><body>${body}</body></html>`;
     }
 
-    function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\n/g,'<br>'); }
+    function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
 
-    // Load bilan binds
-    ['b_appris','b_comp','b_defis','b_next'].forEach(id => {
-      const el = document.getElementById(id);
-      el.addEventListener('input', () => {
-        store.bilan = { appris: document.getElementById('b_appris').value, competences: document.getElementById('b_comp').value, defis: document.getElementById('b_defis').value, prochaines: document.getElementById('b_next').value };
-        scheduleSave();
-      });
-    });
 
-    // Load initial data
-    document.addEventListener('DOMContentLoaded', () => loadData());
+    loadData();
 
-    // Keep window.store accessible for debugging
-    window._portfolio_store = store;
-    window._STORAGE_KEY = STORAGE_KEY;
-
-    // Periodic reload if other tab changed localStorage
-    window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY) {
-        // quick reload from storage
-        try {
-          const parsed = JSON.parse(e.newValue);
-          store = Object.assign({lessons:[],bilan:{}}, parsed);
-          renderList();
-          renderMain();
-          loadBilan();
-        } catch(e){ console.error('sync parse error', e); }
-      }
-    });
   </script>
 </body>
 </html>
